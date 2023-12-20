@@ -5,7 +5,7 @@ import re
 
 
 class AbilityBox(ttk.Frame):
-    def __init__(self, parent, ability):
+    def __init__(self, parent, ability, character_information):
         # Initialize the Frame that is this object
         ttk.Frame.__init__(self, parent,
                           borderwidth=2)
@@ -24,6 +24,7 @@ class AbilityBox(ttk.Frame):
             if entryString.get() == "":
                 pass  # If the entry box is empty, modifier is unchanged
             else:
+                character_information.ability_scores[ability] = entryString.get()
                 modifier = int(entryString.get()) - 10
                 if modifier < 0:  # This accounts for dividing by negative numbers
                      updateModifier(str(int((modifier-1) / 2)))
@@ -60,7 +61,6 @@ class SkillLine(ttk.Frame):
         self.proficient = IntVar()  # Default is false, ensure the boxes default to deselected
 
         def addProficiency(button):  # Function called when checkbutton is selected or deselected
-            print(self.proficient)
             proficiency = 2  # To be replaced with a data call
             if button.instate(['selected']):  # When selected, add proficiency bonus
                 bonus = int(button.cget('text')) + proficiency

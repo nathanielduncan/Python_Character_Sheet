@@ -3,10 +3,11 @@ from tkinter import ttk
 
 import CustomObjects
 import DataObjects
+import Character
 
 
 class CharacterPage(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, character_information):
         ttk.Frame.__init__(self, parent)
 
         # Top Player Frame
@@ -16,7 +17,7 @@ class CharacterPage(ttk.Frame):
 
         # Left scores frame
         frm_scores = ttk.Frame(self)
-        self.populateFrame_scores(frm_scores)
+        self.populateFrame_scores(frm_scores, character_information)
         frm_scores.grid(column=0, row=1, rowspan=4)
 
         # Bottom Left features frame
@@ -72,14 +73,14 @@ class CharacterPage(ttk.Frame):
         frm_player.grid(column=2, row=1)
 
 
-    def populateFrame_scores(self, parentFrame):
+    def populateFrame_scores(self, parentFrame, character_information):
         # Left abilities frame
         frm_abilities = ttk.Frame(parentFrame, borderwidth=2, relief=SOLID)
         frm_abilities.grid(column=0, row=0, rowspan=4)
         ttk.Label(frm_abilities, text="Ability Scores").grid(column=0, row=0)
         abilities = DataObjects.ability_scores()
         for index, ability in enumerate(abilities):
-            CustomObjects.AbilityBox(frm_abilities, ability).grid(column=0, row=index+1)
+            CustomObjects.AbilityBox(frm_abilities, ability, character_information).grid(column=0, row=index+1)
 
         # Right column, 1st spot, Proficiency bonus
         proficiency_bonus = CustomObjects.SingleSkill(parentFrame, "Proficiency Bonus")
