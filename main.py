@@ -18,6 +18,8 @@ def run_program():
 
     def test_button():
         print(character_information.ability_scores)
+        print(character_information.ability_modifiers)
+        print(character_information.skill_proficiencies)
     ttk.Button(window, text="Test", command=test_button).grid(column=1, row=1)
 
     # configure style

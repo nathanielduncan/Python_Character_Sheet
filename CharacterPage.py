@@ -91,10 +91,8 @@ class CharacterPage(ttk.Frame):
         frm_saves.grid(column=1, row=1)
         ttk.Label(frm_saves, text="Saving Throws").grid(column=0, row=0, columnspan=2)
         saves = DataObjects.ability_scores()
-        saveLines = []
         for index, save in enumerate(saves):
-            saveLines.append(CustomObjects.SkillLine(frm_saves, save))
-            saveLines[index].grid(column=0, row=index+1, sticky=W)
+            CustomObjects.SkillLine(frm_saves, save, character_information).grid(column=0, row=index+1, sticky=W)
 
         # Right column, 3rd spot, skills box
         frm_skills = ttk.Frame(parentFrame, borderwidth=2, relief=SOLID)
@@ -102,7 +100,7 @@ class CharacterPage(ttk.Frame):
         ttk.Label(frm_skills, text="Skills").grid(column=0, row=0, columnspan=2)
         skills = DataObjects.ability_skills()
         for index, skill in enumerate(skills):
-            CustomObjects.SkillLine(frm_skills, skill).grid(column=0, row=index+1, sticky=W)
+            CustomObjects.SkillLine(frm_skills, skill, character_information).grid(column=0, row=index+1, sticky=W)
 
         # Right column, 4th spot, passive perception
         passive_perception = CustomObjects.SingleSkill(parentFrame, "Passive Perception")

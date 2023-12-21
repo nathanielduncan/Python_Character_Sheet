@@ -32,6 +32,7 @@ class AbilityBox(ttk.Frame):
                     updateModifier(str(int(modifier / 2)))
         def updateModifier(*args):
             modifierString.set(args[0])
+            character_information.ability_modifiers[ability] = args[0]
 
         # Add a listener function to the string variable
         entryString.trace_add("write", textEntered)
@@ -55,7 +56,7 @@ class AbilityBox(ttk.Frame):
 
 
 class SkillLine(ttk.Frame):
-    def __init__(self, parent, skill):
+    def __init__(self, parent, skill, character_information):
         ttk.Frame.__init__(self, parent)
 
         self.proficient = IntVar()  # Default is false, ensure the boxes default to deselected
@@ -64,8 +65,10 @@ class SkillLine(ttk.Frame):
             proficiency = 2  # To be replaced with a data call
             if button.instate(['selected']):  # When selected, add proficiency bonus
                 bonus = int(button.cget('text')) + proficiency
+                character_information.skill_proficiencies.append(skill)
             else:  # When deselected, remove proficiency bonus
                 bonus = int(button.cget('text')) - proficiency
+                character_information.skill_proficiencies.remove(skill)
             button.configure(text=str(bonus))  # Replace the button text with the new calculated bonus
 
         # Define the checkButton, with a lambda pointing to the function called when it is (de)selected
