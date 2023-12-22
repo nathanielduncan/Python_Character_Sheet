@@ -3,12 +3,13 @@ from tkinter import ttk
 from tkinter import font
 import re
 
+import DataObjects
+
 
 class AbilityBox(ttk.Frame):
     def __init__(self, parent, ability, character_information):
         # Initialize the Frame that is this object
-        ttk.Frame.__init__(self, parent,
-                          borderwidth=2)
+        ttk.Frame.__init__(self, parent, borderwidth=2)
 
         # Define a function used by the Entry Widget to Validate the input
         def check_num(newval):
@@ -17,8 +18,11 @@ class AbilityBox(ttk.Frame):
         check_num_wrapper = (self.register(check_num), '%P')
 
         # Items used to listen for text entered to the entry
-        entryString = StringVar()  # The string tied to the entry widget, for event listening
-        modifierString = StringVar()
+        # These are initialized with the values stored in the Character
+        entryString = StringVar(value=character_information.ability_scores[ability])
+        modifierString = StringVar(value=character_information.ability_modifiers[ability])
+
+
         # This function defines what happens when the entry string is changed
         def textEntered(*args):
             if entryString.get() == "":
@@ -61,6 +65,10 @@ class SkillLine(ttk.Frame):
 
         self.proficient = IntVar()  # Default is false, ensure the boxes default to deselected
 
+        self.bonus = character_information.ability_modifiers[
+            DataObjects.skill_to_score_map(skill)
+        ]
+
         def addProficiency(button):  # Function called when checkbutton is selected or deselected
             proficiency = 2  # To be replaced with a data call
             if button.instate(['selected']):  # When selected, add proficiency bonus
@@ -72,7 +80,7 @@ class SkillLine(ttk.Frame):
             button.configure(text=str(bonus))  # Replace the button text with the new calculated bonus
 
         # Define the checkButton, with a lambda pointing to the function called when it is (de)selected
-        btn_proficient = ttk.Checkbutton(self, text=0, variable=self.proficient,
+        btn_proficient = ttk.Checkbutton(self, text=self.bonus, variable=self.proficient,
                                          command=lambda: addProficiency(btn_proficient))
 
         # Defines the label that hold the name of the skill
