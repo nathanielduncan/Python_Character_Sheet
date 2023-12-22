@@ -1,10 +1,10 @@
-from tkinter import *
 from tkinter import ttk
 
 import CustomFrames
-import CustomObjects
-import DataObjects
-import Character
+
+# This class is the primary ttk.Frame that houses all UI for the Window.
+# There are 7 Frames inside of it, they are defined in Custom Frames
+# They are each arranged specifically, using .grid columns and rows
 
 
 class CharacterPage(ttk.Frame):

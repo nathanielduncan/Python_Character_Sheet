@@ -4,6 +4,7 @@ from tkinter import ttk
 import CustomObjects
 import DataObjects
 
+
 class PlayerInformation(ttk.Frame):
     def __init__(self, parent):
         ttk.Frame.__init__(self, parent, borderwidth=2, relief=SOLID)
@@ -39,36 +40,44 @@ class Scores(ttk.Frame):
         ttk.Frame.__init__(self, parent)
 
         # Left abilities frame
-        frm_abilities = ttk.Frame(self, borderwidth=2, relief=SOLID)
-        frm_abilities.grid(column=0, row=0, rowspan=4)
-        ttk.Label(frm_abilities, text="Ability Scores").grid(column=0, row=0)
-        abilities = DataObjects.ability_scores()
-        for index, ability in enumerate(abilities):
-            CustomObjects.AbilityBox(frm_abilities, ability, character_information).grid(column=0, row=index+1)
+        self.frm_abilities = ttk.Frame(self, borderwidth=2, relief=SOLID)
+        self.frm_abilities.grid(column=0, row=0, rowspan=4)
+        ttk.Label(self.frm_abilities, text="Ability Scores").grid(column=0, row=0)
+        abilities = DataObjects.ability_scores()  # Get the list of abilities, TODO:: change to database
+        self.ability_boxes = []  # Make an array, to store the 6 frame_AbilityBoxes
+        for index, ability in enumerate(abilities):  # For each box
+            temp = CustomObjects.AbilityBox(self.frm_abilities, ability, character_information)  # Initiate it
+            temp.grid(column=0, row=index + 1)  # Place it
+            temp.entryString.trace_add("write", self.textEntered)  # Make a listener for the Entry
+            self.ability_boxes.append(temp)  # Save the box into the array
+
 
         # Right column, 1st spot, Proficiency bonus
-        proficiency_bonus = CustomObjects.SingleSkill(self, "Proficiency Bonus")
-        proficiency_bonus.grid(column=1, row=0)
+        self.proficiency_bonus = CustomObjects.SingleSkill(self, "Proficiency Bonus")
+        self.proficiency_bonus.grid(column=1, row=0)
 
         # right column, 2nd spot, saving throws
-        frm_saves = ttk.Frame(self, borderwidth=2, relief=SOLID)
-        frm_saves.grid(column=1, row=1)
-        ttk.Label(frm_saves, text="Saving Throws").grid(column=0, row=0, columnspan=2)
+        self.frm_saves = ttk.Frame(self, borderwidth=2, relief=SOLID)
+        self.frm_saves.grid(column=1, row=1)
+        ttk.Label(self.frm_saves, text="Saving Throws").grid(column=0, row=0, columnspan=2)
         saves = DataObjects.ability_scores()
         for index, save in enumerate(saves):
-            CustomObjects.SkillLine(frm_saves, save, character_information).grid(column=0, row=index+1, sticky=W)
+            CustomObjects.SkillLine(self.frm_saves, save, character_information).grid(column=0, row=index+1, sticky=W)
 
         # Right column, 3rd spot, skills box
-        frm_skills = ttk.Frame(self, borderwidth=2, relief=SOLID)
-        frm_skills.grid(column=1, row=2)
-        ttk.Label(frm_skills, text="Skills").grid(column=0, row=0, columnspan=2)
+        self.frm_skills = ttk.Frame(self, borderwidth=2, relief=SOLID)
+        self.frm_skills.grid(column=1, row=2)
+        ttk.Label(self.frm_skills, text="Skills").grid(column=0, row=0, columnspan=2)
         skills = DataObjects.ability_skills()
         for index, skill in enumerate(skills):
-            CustomObjects.SkillLine(frm_skills, skill, character_information).grid(column=0, row=index+1, sticky=W)
+            CustomObjects.SkillLine(self.frm_skills, skill, character_information).grid(column=0, row=index+1, sticky=W)
 
         # Right column, 4th spot, passive perception
         passive_perception = CustomObjects.SingleSkill(self, "Passive Perception")
         passive_perception.grid(column=1, row=3)
+
+    def textEntered(*args):
+        print("Hello Andi")
 
 
 class Features(ttk.Frame):

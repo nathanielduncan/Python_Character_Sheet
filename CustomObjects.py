@@ -19,44 +19,44 @@ class AbilityBox(ttk.Frame):
 
         # Items used to listen for text entered to the entry
         # These are initialized with the values stored in the Character
-        entryString = StringVar(value=character_information.ability_scores[ability])
-        modifierString = StringVar(value=character_information.ability_modifiers[ability])
+        self.entryString = StringVar(value=character_information.ability_scores[ability])
+        self.modifierString = StringVar(value=character_information.ability_modifiers[ability])
 
 
         # This function defines what happens when the entry string is changed
         def textEntered(*args):
-            if entryString.get() == "":
+            if self.entryString.get() == "":
                 pass  # If the entry box is empty, modifier is unchanged
             else:
-                character_information.ability_scores[ability] = entryString.get()
-                modifier = int(entryString.get()) - 10
+                character_information.ability_scores[ability] = self.entryString.get()
+                modifier = int(self.entryString.get()) - 10
                 if modifier < 0:  # This accounts for dividing by negative numbers
                      updateModifier(str(int((modifier-1) / 2)))
                 else:
                     updateModifier(str(int(modifier / 2)))
         def updateModifier(*args):
-            modifierString.set(args[0])
+            self.modifierString.set(args[0])
             character_information.ability_modifiers[ability] = args[0]
 
         # Add a listener function to the string variable
-        entryString.trace_add("write", textEntered)
+        self.entryString.trace_add("write", textEntered)
 
         # Customize the fonts
         abilityFont = font.Font(family='Georgia', size=20, weight='bold')
         modifierFont = font.Font(family='Georgia', size=12)
 
         # Create the widgets that go into the frame
-        lbl_ability = ttk.Label(self, text=ability)
-        ent_score = ttk.Entry(self, width=2, font=abilityFont, justify="center",
-                              textvariable=entryString, validate='key', validatecommand=check_num_wrapper)
-        lbl_modifier = ttk.Label(self, width=2, font=modifierFont, justify="center",
-                                 textvariable=modifierString)
+        self.lbl_ability = ttk.Label(self, text=ability)
+        self.ent_score = ttk.Entry(self, width=2, font=abilityFont, justify="center",
+                              textvariable=self.entryString, validate='key', validatecommand=check_num_wrapper)
+        self.lbl_modifier = ttk.Label(self, width=2, font=modifierFont, justify="center",
+                                 textvariable=self.modifierString)
 
 
         # Arrange the three widgets created above
-        lbl_ability.grid(column=0, row=0)
-        ent_score.grid(column=0, row=1)
-        lbl_modifier.grid(column=0, row=2)
+        self.lbl_ability.grid(column=0, row=0)
+        self.ent_score.grid(column=0, row=1)
+        self.lbl_modifier.grid(column=0, row=2)
 
 
 class SkillLine(ttk.Frame):
