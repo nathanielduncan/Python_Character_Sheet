@@ -95,12 +95,12 @@ class Scores(ttk.Frame):
                 # Place the entered Ability score into the Character Data Object
                 self.character_information.ability_scores[ability] = box.entryString.get()
                 # Call the function defined in the ability box, it calculates and updates the modifier
-                box.textEntered()
+                box.text_entered()
 
         # Update the bonus for any related skills, and saving throws
         for index, line in enumerate(self.skill_lines):
             if line.related_ability == ability:
-                line.updateBonus()
+                line.update_bonus()
 
 
 class Features(ttk.Frame):
