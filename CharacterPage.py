@@ -12,29 +12,29 @@ class CharacterPage(ttk.Frame):
         ttk.Frame.__init__(self, parent)
 
         # Top Player Frame
-        frm_player_information = CustomFrames.PlayerInformation(self)
-        frm_player_information.grid(column=0, row=0, columnspan=3)
+        self.frm_player_information = CustomFrames.PlayerInformation(self)
+        self.frm_player_information.grid(column=0, row=0, columnspan=3)
 
         # Left scores frame
-        frm_scores = CustomFrames.Scores(self, character_information)
-        frm_scores.grid(column=0, row=1, rowspan=4)
+        self.frm_scores = CustomFrames.Scores(self, character_information)
+        self.frm_scores.grid(column=0, row=1, rowspan=4)
 
         # Bottom Left features frame
-        frm_features = CustomFrames.Features(self)
-        frm_features.grid(column=0, row=5)
+        self.frm_features = CustomFrames.Features(self)
+        self.frm_features.grid(column=0, row=5)
 
         # Center Life frame
-        frm_life = CustomFrames.Life(self)
-        frm_life.grid(column=1, row=1, rowspan=2)
+        self.frm_life = CustomFrames.Life(self)
+        self.frm_life.grid(column=1, row=1, rowspan=2)
 
         # Center limits frame
-        frm_limits = CustomFrames.Limits(self)
-        frm_limits.grid(column=1, row=3)
+        self.frm_limits = CustomFrames.Limits(self)
+        self.frm_limits.grid(column=1, row=3)
 
         # Right proficiencies frame
-        frm_proficiencies = CustomFrames.Proficiencies(self)
-        frm_proficiencies.grid(column=2, row=1, rowspan=3)
+        self.frm_proficiencies = CustomFrames.Proficiencies(self)
+        self.frm_proficiencies.grid(column=2, row=1, rowspan=3)
 
         # Bottom Left options frame
-        frm_options = CustomFrames.Options(self)
-        frm_options.grid(column=1, row=4, columnspan=2, rowspan=2)
+        self.frm_options = CustomFrames.Options(self)
+        self.frm_options.grid(column=1, row=4, columnspan=2, rowspan=2)
