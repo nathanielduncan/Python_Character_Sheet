@@ -12,7 +12,7 @@ class CharacterPage(ttk.Frame):
         ttk.Frame.__init__(self, parent)
 
         # Top Player Frame
-        self.frm_player_information = CustomFrames.PlayerInformation(self)
+        self.frm_player_information = CustomFrames.PlayerInformation(self, character_information)
         self.frm_player_information.grid(column=0, row=0, columnspan=3)
 
         # Left scores frame

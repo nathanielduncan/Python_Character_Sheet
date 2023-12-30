@@ -2,6 +2,8 @@
 
 class CharacterData:
     def __init__(self):
+        self.level = 1
+
         self.ability_scores = {
             "Strength": "10",
             "Dexterity": "10",

@@ -114,7 +114,9 @@ class SingleSkill(ttk.Frame):
     def __init__(self, parent, skill):
         ttk.Frame.__init__(self, parent, borderwidth=2, relief=SOLID)
 
-        self.lbl_bonus = ttk.Label(self, text="0")
+        self.labelString = StringVar()
+
+        self.lbl_bonus = ttk.Label(self, text="0", textvariable=self.labelString)
         self.lbl_skill = ttk.Label(self, text=skill)
 
         self.lbl_bonus.grid(column=0, row=0)
@@ -125,7 +127,12 @@ class LabeledEntry(ttk.Frame):
     def __init__(self, parent, description):
         ttk.Frame.__init__(self, parent)
 
-        self.ent_entry = ttk.Entry(self)
+        self.entryString = StringVar()
+        # Customize the fonts
+        entryFont = font.Font(family='Georgia', size=15)
+
+        self.ent_entry = ttk.Entry(self, width=5, font=entryFont, justify='center',
+                                   textvariable=self.entryString)
         self.lbl_label = ttk.Label(self, text=description)
 
         self.ent_entry.grid(column=0, row=0)

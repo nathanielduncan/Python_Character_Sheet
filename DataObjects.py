@@ -40,3 +40,25 @@ def skill_to_score_map(skill):
         "Survival": "Wisdom"
     }
     return score_map[skill]
+
+
+def proficiency_bonus_map(level):
+    if level < 5:
+        key = "A"
+    if 5 <= level < 9:
+        key = "B"
+    if 9 <= level < 13:
+        key = "C"
+    if 13 <= level < 17:
+        key = "D"
+    if 17 <= level:
+        key = "E"
+
+    prof_bonus_map = {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "5",
+        "E": "6"
+    }
+    return prof_bonus_map[key]
