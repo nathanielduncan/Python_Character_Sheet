@@ -7,12 +7,11 @@ import DataObjects
 
 
 class AbilityBox(ttk.Frame):
-    def __init__(self, parent, ability, character_information):
+    def __init__(self, parent, ability):
         # Initialize the Frame that is this object
         ttk.Frame.__init__(self, parent, borderwidth=2)
 
         self.ability = ability
-        self.character_information = character_information
 
         # Define a function used by the Entry Widget to Validate the input
         def check_num(entered_val):
@@ -22,8 +21,8 @@ class AbilityBox(ttk.Frame):
 
         # Items used to listen for text entered to the entry
         # These are initialized with the values stored in the Character
-        self.entryString = StringVar(value=character_information.ability_scores[ability], name=ability)
-        self.modifierString = StringVar(value=character_information.ability_modifiers[ability])
+        self.entryString = StringVar(name=ability)
+        self.modifierString = StringVar()
 
 
         # Customize the fonts
@@ -43,41 +42,20 @@ class AbilityBox(ttk.Frame):
         self.ent_score.grid(column=0, row=1)
         self.lbl_modifier.grid(column=0, row=2)
 
-    def text_entered(self):
-        if self.entryString.get() == "":
-            pass  # If the entry box is empty, modifier is unchanged
-        else:
-            # Calculate the modifier
-            modifier = int(self.character_information.ability_scores[self.ability]) - 10
-            # Update the modifier
-            if modifier < 0:  # This accounts for dividing by negative numbers
-                self.character_information.ability_modifiers[self.ability] = str(int((modifier - 1) / 2))
-                self.update_modifier()
-            else:
-                self.character_information.ability_modifiers[self.ability] = str(int(modifier / 2))
-                self.update_modifier()
-
-    def update_modifier(self):
-        self.modifierString.set(self.character_information.ability_modifiers[self.ability])
-
 
 class SkillLine(ttk.Frame):
-    def __init__(self, parent, skill, character_information):
+    def __init__(self, parent, skill):
         ttk.Frame.__init__(self, parent)
 
-        self.character_information = character_information
         self.skill = skill
         self.related_ability = DataObjects.skill_to_score_map(self.skill)
         self.proficient = IntVar()  # Default is false, ensure the boxes default to deselected
 
-        self.bonus = StringVar(value=character_information.ability_modifiers[
-            DataObjects.skill_to_score_map(skill)
-        ])
+        self.bonus = StringVar()
 
 
         # Define the checkButton, with a lambda pointing to the function called when it is (de)selected
-        self.btn_proficient = ttk.Checkbutton(self, textvariable=self.bonus, variable=self.proficient,
-                                              command=self.add_proficiency)
+        self.btn_proficient = ttk.Checkbutton(self, textvariable=self.bonus, variable=self.proficient)
 
         # Defines the label that hold the name of the skill
         self.lbl_skill = ttk.Label(self, text=skill)
@@ -85,29 +63,6 @@ class SkillLine(ttk.Frame):
         # Place the created items into the parent frame: self
         self.btn_proficient.grid(column=0, row=0)
         self.lbl_skill.grid(column=1, row=0)
-
-
-    def add_proficiency(self):  # Function called when checkbutton is selected or deselected
-        proficiency = 2  # TODO replaced with a data call
-        if self.btn_proficient.instate(['selected']):  # When selected, add proficiency bonus
-            bonus = int(self.btn_proficient.cget('text')) + proficiency
-            self.character_information.skill_proficiencies.append(self.skill)
-        else:  # When deselected, remove proficiency bonus
-            bonus = int(self.btn_proficient.cget('text')) - proficiency
-            self.character_information.skill_proficiencies.remove(self.skill)
-        self.bonus.set(value=str(bonus))  # Bonus is stored in the Skill Line Object as a StringVar,
-        # It will automatically update the label when changed
-
-    def update_bonus(self):
-        # Same as addProficiency, but does not change the Character Data
-        proficiency = 2  # TODO replaced with a data call
-        if self.btn_proficient.instate(['selected']):  # When selected, add proficiency bonus
-            bonus = int(self.character_information.ability_modifiers[self.related_ability]) + proficiency
-        else:  # When deselected, remove proficiency bonus
-            bonus = int(self.character_information.ability_modifiers[self.related_ability])
-        self.bonus.set(value=str(bonus))  # Bonus is stored in the Skill Line Object as a StringVar,
-        # It will automatically update the label when changed
-
 
 
 class SingleSkill(ttk.Frame):

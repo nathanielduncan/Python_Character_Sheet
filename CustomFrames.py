@@ -6,10 +6,8 @@ import DataObjects
 
 
 class PlayerInformation(ttk.Frame):
-    def __init__(self, parent, character_information):
+    def __init__(self, parent):
         ttk.Frame.__init__(self, parent, borderwidth=2, relief=SOLID)
-
-        self.character_information = character_information
 
         self.character_name = CustomObjects.LabeledEntry(self, "Character Name")
         self.character_name.grid(column=0, row=0)
@@ -29,7 +27,6 @@ class PlayerInformation(ttk.Frame):
         # Item 4, Level
         self.frm_level = CustomObjects.LabeledEntry(self.frm_player_items, "Level exp/exp")
         self.frm_level.grid(column=0, row=1)
-        self.frm_level.entryString.set(value=self.character_information.level)
         # TODO if the level entry updates, the proficiency bonus should update
         # Item 5, Alignment
         self.frm_Alignment = CustomObjects.LabeledEntry(self.frm_player_items, "Alignment")
@@ -40,10 +37,8 @@ class PlayerInformation(ttk.Frame):
 
 
 class Scores(ttk.Frame):
-    def __init__(self, parent, character_information):
+    def __init__(self, parent):
         ttk.Frame.__init__(self, parent)
-
-        self.character_information = character_information
 
         # Left abilities frame
         self.frm_abilities = ttk.Frame(self, borderwidth=2, relief=SOLID)
@@ -53,7 +48,7 @@ class Scores(ttk.Frame):
         self.ability_boxes = []  # Make an array, to store the 6 frame_AbilityBoxes
 
         for index, ability in enumerate(abilities):  # For each box
-            temp = CustomObjects.AbilityBox(self.frm_abilities, ability, self.character_information)  # Initiate it
+            temp = CustomObjects.AbilityBox(self.frm_abilities, ability)  # Initiate it
             temp.grid(column=0, row=index + 1)  # Place it
             temp.entryString.trace_add("write", self.ability_updated)  # Make a listener for the Entry
             self.ability_boxes.append(temp)  # Save the box into the array
@@ -61,8 +56,6 @@ class Scores(ttk.Frame):
         # Right column, 1st spot, Proficiency bonus
         self.proficiency_bonus = CustomObjects.SingleSkill(self, "Proficiency Bonus")
         self.proficiency_bonus.grid(column=1, row=0)
-        self.proficiency_bonus.labelString.set(
-            value=DataObjects.proficiency_bonus_map(self.character_information.level))
 
         # right column, 2nd spot, saving throws
         self.frm_saves = ttk.Frame(self, borderwidth=2, relief=SOLID)
@@ -71,7 +64,7 @@ class Scores(ttk.Frame):
         saves = DataObjects.ability_scores()
         self.skill_lines = []  # This array will hold all saving throw lines, and skill lines
         for index, save in enumerate(saves):
-            temp = CustomObjects.SkillLine(self.frm_saves, save, character_information)
+            temp = CustomObjects.SkillLine(self.frm_saves, save)
             temp.grid(column=0, row=index+1, sticky=W)
             self.skill_lines.append(temp)
 
@@ -81,7 +74,7 @@ class Scores(ttk.Frame):
         ttk.Label(self.frm_skills, text="Skills").grid(column=0, row=0, columnspan=2)
         skills = DataObjects.ability_skills()
         for index, skill in enumerate(skills):
-            temp = CustomObjects.SkillLine(self.frm_skills, skill, character_information)
+            temp = CustomObjects.SkillLine(self.frm_skills, skill)
             temp.grid(column=0, row=index+1, sticky=W)
             self.skill_lines.append(temp)
 
@@ -99,14 +92,13 @@ class Scores(ttk.Frame):
         for index, box in enumerate(self.ability_boxes):
             if box.ability == ability:
                 # Place the entered Ability score into the Character Data Object
-                self.character_information.ability_scores[ability] = box.entryString.get()
                 # Call the function defined in the ability box, it calculates and updates the modifier
-                box.text_entered()
+                pass
 
         # Update the bonus for any related skills, and saving throws
         for index, line in enumerate(self.skill_lines):
             if line.related_ability == ability:
-                line.update_bonus()
+                pass
 
 
 class Features(ttk.Frame):

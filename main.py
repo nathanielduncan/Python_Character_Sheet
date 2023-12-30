@@ -18,7 +18,7 @@ def run_program():
 
     window = Tk()
     window.title("Character Sheet")
-    main_frame = CharacterPage.CharacterPage(window, character_information)
+    main_frame = CharacterPage.CharacterPage(window)
     main_frame.grid(column=0, row=0, columnspan=2)
 
     ttk.Label(window, text="The Content of the SRD 5.1 may be distributed under The CC-BY-4.0 license.")\
