@@ -6,8 +6,10 @@ import DataObjects
 
 
 class PlayerInformation(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, character_information):
         ttk.Frame.__init__(self, parent, borderwidth=2, relief=SOLID)
+
+        self.character_information = character_information
 
         self.character_name = CustomObjects.LabeledEntry(self, "Character Name")
         self.character_name.grid(column=0, row=0)
@@ -27,6 +29,8 @@ class PlayerInformation(ttk.Frame):
         # Item 4, Level
         self.frm_level = CustomObjects.LabeledEntry(self.frm_player_items, "Level exp/exp")
         self.frm_level.grid(column=0, row=1)
+        self.frm_level.entryString.set(value=self.character_information.level)
+        # TODO if the level entry updates, the proficiency bonus should update
         # Item 5, Alignment
         self.frm_Alignment = CustomObjects.LabeledEntry(self.frm_player_items, "Alignment")
         self.frm_Alignment.grid(column=1, row=1)
@@ -49,7 +53,7 @@ class Scores(ttk.Frame):
         self.ability_boxes = []  # Make an array, to store the 6 frame_AbilityBoxes
 
         for index, ability in enumerate(abilities):  # For each box
-            temp = CustomObjects.AbilityBox(self.frm_abilities, ability, character_information)  # Initiate it
+            temp = CustomObjects.AbilityBox(self.frm_abilities, ability, self.character_information)  # Initiate it
             temp.grid(column=0, row=index + 1)  # Place it
             temp.entryString.trace_add("write", self.ability_updated)  # Make a listener for the Entry
             self.ability_boxes.append(temp)  # Save the box into the array
@@ -57,6 +61,8 @@ class Scores(ttk.Frame):
         # Right column, 1st spot, Proficiency bonus
         self.proficiency_bonus = CustomObjects.SingleSkill(self, "Proficiency Bonus")
         self.proficiency_bonus.grid(column=1, row=0)
+        self.proficiency_bonus.labelString.set(
+            value=DataObjects.proficiency_bonus_map(self.character_information.level))
 
         # right column, 2nd spot, saving throws
         self.frm_saves = ttk.Frame(self, borderwidth=2, relief=SOLID)
