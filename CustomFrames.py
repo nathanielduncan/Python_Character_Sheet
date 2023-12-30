@@ -6,11 +6,17 @@ import DataObjects
 
 
 class PlayerInformation(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         ttk.Frame.__init__(self, parent, borderwidth=2, relief=SOLID)
+
+        self.controller = controller
 
         self.character_name = CustomObjects.LabeledEntry(self, "Character Name")
         self.character_name.grid(column=0, row=0)
+
+        self.controller.register(self, "name")
+        self.character_name.entryString.trace_add("write", lambda a,b,c: self.controller.name_entered(
+            self.character_name.entryString.get()))
 
         # Frame for the other 6 player information items
         self.frm_player_items = ttk.Frame(self)
@@ -34,6 +40,15 @@ class PlayerInformation(ttk.Frame):
         # Item 6, Player Name
         self.frm_player = CustomObjects.LabeledEntry(self.frm_player_items, "Player Name")
         self.frm_player.grid(column=2, row=1)
+
+        # Item 7, Load Data Button
+        self.btn_loadData = ttk.Button(self.frm_player_items, text="Load Data")
+        self.btn_loadData.grid(column=3, row=0, rowspan=2)
+
+    def update_field(self, field, new_value):
+        if field == "name":
+            self.frm_class.entryString.set(new_value)
+
 
 
 class Scores(ttk.Frame):
@@ -127,8 +142,9 @@ class Life(ttk.Frame):
         frm_major_attributes = ttk.Frame(self)
         frm_major_attributes.grid(column=0, row=0)
 
-        ent_max_health = CustomObjects.LabeledEntry(frm_major_attributes, "Max Hit Points")
-        ent_max_health.grid(column=0, row=0)
+        self.ent_max_health = CustomObjects.LabeledEntry(frm_major_attributes, "Max Hit Points")
+        self.ent_max_health.grid(column=0, row=0)
+        self.ent_max_health.bind("<<testEvent>>", self.lifebox_triggered)
         lbl_initiative = CustomObjects.MajorAttribute(frm_major_attributes, "Initiative")
         lbl_initiative.grid(column=1, row=0)
         lbl_speed = CustomObjects.MajorAttribute(frm_major_attributes, "Speed")
@@ -146,6 +162,10 @@ class Life(ttk.Frame):
         lbl_hitDice.grid(column=0, row=2)
         lbl_deathRolls = CustomObjects.LabeledEntry(frm_health, "Death Saves")
         lbl_deathRolls.grid(column=1, row=2)
+
+    def lifebox_triggered(self, *args):
+        print("Life box triggered")
+        self.ent_max_health.entryString.set()
 
 
 class Limits(ttk.Frame):
