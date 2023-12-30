@@ -1,3 +1,4 @@
 class Controller:
     def __init__(self, model, view):
-        pass
+        self.model = model
+        self.view = view
