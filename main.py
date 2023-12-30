@@ -4,8 +4,16 @@ from tkinter import ttk
 import CharacterPage
 import Character
 
+from Model import Model
+from View import View
+from Controller import Controller
+
 
 def run_program():
+    model = Model()
+    view = View()
+    controller = Controller(model, view)
+
     character_information = Character.CharacterData()
 
     window = Tk()
