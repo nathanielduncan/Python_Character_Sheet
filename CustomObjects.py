@@ -3,7 +3,6 @@ from tkinter import ttk
 from tkinter import font
 import re
 
-import DataObjects
 
 
 class AbilityBox(ttk.Frame):
@@ -65,7 +64,7 @@ class SkillLine(ttk.Frame):
         self.skill = skill
         self.controller = controller
         # Define the ability related to the given skill
-        self.related_ability = DataObjects.skill_to_score_map(self.skill)
+        self.related_ability = self.controller.get_related_ability(self.skill)
         # Define Vars to be connected with widgets
         self.proficient = IntVar()  # Assigned to ckbtn_proficient. Ensures the box defaults to deselected
         self.bonus = StringVar()

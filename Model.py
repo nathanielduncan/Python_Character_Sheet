@@ -73,4 +73,3 @@ class Model:
         self.character.skill_proficiencies.remove(skill)
         self.set_skill_bonus(related_ability)
         # Does not call any registered fields
-
