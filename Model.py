@@ -24,7 +24,7 @@ class Model:
 
     def set_modifier(self, ability):
         if self.character.ability_scores[ability] == "":  # If the new ability score is empty
-            self.character.ability_modifiers[ability] = "-"
+            self.character.ability_modifiers[ability] = ""
         else:
             # Calculate the modifier
             modifier = int(self.character.ability_scores[ability]) - 10
@@ -38,7 +38,11 @@ class Model:
 
     def set_skill_bonus(self, ability):
         modifier = self.character.ability_modifiers[ability]
-        mod_with_proficiency = str(int(modifier) + self.character.proficiency_bonus)
+        if modifier == "":  # If the ability value, and the related modifier is empty, no math is done
+            mod_with_proficiency = ""
+        else:  # If not empty, consider the proficiency bonus
+            mod_with_proficiency = str(int(modifier) + self.character.proficiency_bonus)
+
         related_skills = DataObjects.score_to_skill_dict(ability)
 
         # Place modifier for the saving throw
