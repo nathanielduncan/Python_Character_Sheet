@@ -18,7 +18,7 @@ class CharacterPage(ttk.Frame):
         self.frm_player_information.grid(column=0, row=0, columnspan=3)
 
         # Left scores frame
-        self.frm_scores = CustomFrames.Scores(self)
+        self.frm_scores = CustomFrames.Scores(self, self.controller)
         self.frm_scores.grid(column=0, row=1, rowspan=4)
 
         # Bottom Left features frame

@@ -42,6 +42,18 @@ def skill_to_score_map(skill):
     return score_map[skill]
 
 
+def score_to_skill_dict(ability):
+    score_map = {
+        "Strength": {"Athletics", },
+        "Dexterity": {"Acrobatics", "Sleight of Hand", "Stealth"},
+        "Constitution": {},
+        "Intelligence": {"Arcana", "History", "Investigation", "Nature", "Religion"},
+        "Wisdom": {"Animal Handling", "Insight", "Medicine", "Perception", "Survival"},
+        "Charisma": {"Deception", "Intimidation", "Performance", "Persuasion"}
+    }
+    return score_map[ability]
+
+
 def proficiency_bonus_map(level):
     if level < 5:
         key = "A"

@@ -13,8 +13,7 @@ class PlayerInformation(ttk.Frame):
 
         self.character_name = CustomObjects.LabeledEntry(self, "Character Name")
         self.character_name.grid(column=0, row=0)
-
-        self.controller.register(self, "name")
+        # If a name is entered into the Name box, it will save to the data object
         self.character_name.entryString.trace_add("write", lambda a,b,c: self.controller.name_entered(
             self.character_name.entryString.get()))
 
@@ -45,28 +44,21 @@ class PlayerInformation(ttk.Frame):
         self.btn_loadData = ttk.Button(self.frm_player_items, text="Load Data")
         self.btn_loadData.grid(column=3, row=0, rowspan=2)
 
-    def update_field(self, field, new_value):
-        if field == "name":
-            self.frm_class.entryString.set(new_value)
-
-
 
 class Scores(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         ttk.Frame.__init__(self, parent)
+
+        self.controller = controller
 
         # Left abilities frame
         self.frm_abilities = ttk.Frame(self, borderwidth=2, relief=SOLID)
         self.frm_abilities.grid(column=0, row=0, rowspan=4)
         ttk.Label(self.frm_abilities, text="Ability Scores").grid(column=0, row=0)
-        abilities = DataObjects.ability_scores()  # Get the list of abilities, TODO:: change to database
-        self.ability_boxes = []  # Make an array, to store the 6 frame_AbilityBoxes
+        abilities = DataObjects.ability_scores()  # Get the list of abilities, TODO:: change to model call?
 
         for index, ability in enumerate(abilities):  # For each box
-            temp = CustomObjects.AbilityBox(self.frm_abilities, ability)  # Initiate it
-            temp.grid(column=0, row=index + 1)  # Place it
-            temp.entryString.trace_add("write", self.ability_updated)  # Make a listener for the Entry
-            self.ability_boxes.append(temp)  # Save the box into the array
+            CustomObjects.AbilityBox(self.frm_abilities, ability, self.controller).grid(column=0, row=index + 1)
 
         # Right column, 1st spot, Proficiency bonus
         self.proficiency_bonus = CustomObjects.SingleSkill(self, "Proficiency Bonus")
@@ -77,11 +69,8 @@ class Scores(ttk.Frame):
         self.frm_saves.grid(column=1, row=1)
         ttk.Label(self.frm_saves, text="Saving Throws").grid(column=0, row=0, columnspan=2)
         saves = DataObjects.ability_scores()
-        self.skill_lines = []  # This array will hold all saving throw lines, and skill lines
         for index, save in enumerate(saves):
-            temp = CustomObjects.SkillLine(self.frm_saves, save)
-            temp.grid(column=0, row=index+1, sticky=W)
-            self.skill_lines.append(temp)
+            CustomObjects.SkillLine(self.frm_saves, save, self.controller).grid(column=0, row=index+1, sticky=W)
 
         # Right column, 3rd spot, skills box
         self.frm_skills = ttk.Frame(self, borderwidth=2, relief=SOLID)
@@ -89,31 +78,12 @@ class Scores(ttk.Frame):
         ttk.Label(self.frm_skills, text="Skills").grid(column=0, row=0, columnspan=2)
         skills = DataObjects.ability_skills()
         for index, skill in enumerate(skills):
-            temp = CustomObjects.SkillLine(self.frm_skills, skill)
-            temp.grid(column=0, row=index+1, sticky=W)
-            self.skill_lines.append(temp)
+            CustomObjects.SkillLine(self.frm_skills, skill, controller).grid(column=0, row=index+1, sticky=W)
 
 
         # Right column, 4th spot, passive perception
         self.passive_perception = CustomObjects.SingleSkill(self, "Passive Perception")
         self.passive_perception.grid(column=1, row=3)
-
-
-    def ability_updated(self, *args):
-        # args[0] here, is defined as the name of the ability for the ability box that was edited
-        ability = args[0]
-
-        # Need to find the ability box that was updated
-        for index, box in enumerate(self.ability_boxes):
-            if box.ability == ability:
-                # Place the entered Ability score into the Character Data Object
-                # Call the function defined in the ability box, it calculates and updates the modifier
-                pass
-
-        # Update the bonus for any related skills, and saving throws
-        for index, line in enumerate(self.skill_lines):
-            if line.related_ability == ability:
-                pass
 
 
 class Features(ttk.Frame):

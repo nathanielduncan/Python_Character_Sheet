@@ -17,15 +17,32 @@ class Controller:
         """
 
     def register(self, widget, field):
+        """
+        Widgets with access to the controller can call this function to register themselves, or a widget they own, to be
+        notified if the specified field is updated in the model. The passed widget must have a method named
+        'update_field(field, new_value)'
+        :param widget:
+        :param field:
+        :return:
+        """
         to_register = {"widget": widget,
                        "field": field}
         self.registered_widgets.append(to_register)
-        self.model.register(field)
 
     def triggered(self, field, new_value):
-        for widget in self.registered_widgets:
-            if widget["field"] == field:
-                widget["widget"].update_field(widget["field"], new_value)
+        for item in self.registered_widgets:
+            if item["field"] == field:
+                item["widget"].update_field(item["field"], new_value)
 
     def name_entered(self, name, *args):
         self.model.set_name(name)
+
+    def ability_entered(self, ability, new_value):
+        self.model.set_ability(ability, new_value)
+
+    def proficiency_entered(self, action, skill):
+        if action == "add":
+            self.model.add_proficiency(skill)
+        if action == "remove":
+            self.model.remove_proficiency(skill)
+
