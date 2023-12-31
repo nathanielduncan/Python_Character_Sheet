@@ -8,15 +8,17 @@ import CustomFrames
 
 
 class CharacterPage(ttk.Frame):
-    def __init__(self, parent, character_information):
+    def __init__(self, parent, controller):
         ttk.Frame.__init__(self, parent)
 
+        self.controller = controller
+
         # Top Player Frame
-        self.frm_player_information = CustomFrames.PlayerInformation(self, character_information)
+        self.frm_player_information = CustomFrames.PlayerInformation(self, self.controller)
         self.frm_player_information.grid(column=0, row=0, columnspan=3)
 
         # Left scores frame
-        self.frm_scores = CustomFrames.Scores(self, character_information)
+        self.frm_scores = CustomFrames.Scores(self, self.controller)
         self.frm_scores.grid(column=0, row=1, rowspan=4)
 
         # Bottom Left features frame

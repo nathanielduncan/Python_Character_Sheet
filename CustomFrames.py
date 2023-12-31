@@ -6,13 +6,16 @@ import DataObjects
 
 
 class PlayerInformation(ttk.Frame):
-    def __init__(self, parent, character_information):
+    def __init__(self, parent, controller):
         ttk.Frame.__init__(self, parent, borderwidth=2, relief=SOLID)
 
-        self.character_information = character_information
+        self.controller = controller
 
         self.character_name = CustomObjects.LabeledEntry(self, "Character Name")
         self.character_name.grid(column=0, row=0)
+        # If a name is entered into the Name box, it will save to the data object
+        self.character_name.entryString.trace_add("write", lambda a,b,c: self.controller.name_entered(
+            self.character_name.entryString.get()))
 
         # Frame for the other 6 player information items
         self.frm_player_items = ttk.Frame(self)
@@ -29,7 +32,6 @@ class PlayerInformation(ttk.Frame):
         # Item 4, Level
         self.frm_level = CustomObjects.LabeledEntry(self.frm_player_items, "Level exp/exp")
         self.frm_level.grid(column=0, row=1)
-        self.frm_level.entryString.set(value=self.character_information.level)
         # TODO if the level entry updates, the proficiency bonus should update
         # Item 5, Alignment
         self.frm_Alignment = CustomObjects.LabeledEntry(self.frm_player_items, "Alignment")
@@ -38,42 +40,37 @@ class PlayerInformation(ttk.Frame):
         self.frm_player = CustomObjects.LabeledEntry(self.frm_player_items, "Player Name")
         self.frm_player.grid(column=2, row=1)
 
+        # Item 7, Load Data Button
+        self.btn_loadData = ttk.Button(self.frm_player_items, text="Load Data")
+        self.btn_loadData.grid(column=3, row=0, rowspan=2)
+
 
 class Scores(ttk.Frame):
-    def __init__(self, parent, character_information):
+    def __init__(self, parent, controller):
         ttk.Frame.__init__(self, parent)
 
-        self.character_information = character_information
+        self.controller = controller
 
         # Left abilities frame
         self.frm_abilities = ttk.Frame(self, borderwidth=2, relief=SOLID)
         self.frm_abilities.grid(column=0, row=0, rowspan=4)
         ttk.Label(self.frm_abilities, text="Ability Scores").grid(column=0, row=0)
-        abilities = DataObjects.ability_scores()  # Get the list of abilities, TODO:: change to database
-        self.ability_boxes = []  # Make an array, to store the 6 frame_AbilityBoxes
+        abilities = DataObjects.ability_scores()  # Get the list of abilities, TODO:: change to model call?
 
         for index, ability in enumerate(abilities):  # For each box
-            temp = CustomObjects.AbilityBox(self.frm_abilities, ability, self.character_information)  # Initiate it
-            temp.grid(column=0, row=index + 1)  # Place it
-            temp.entryString.trace_add("write", self.ability_updated)  # Make a listener for the Entry
-            self.ability_boxes.append(temp)  # Save the box into the array
+            CustomObjects.AbilityBox(self.frm_abilities, ability, self.controller).grid(column=0, row=index + 1)
 
         # Right column, 1st spot, Proficiency bonus
         self.proficiency_bonus = CustomObjects.SingleSkill(self, "Proficiency Bonus")
         self.proficiency_bonus.grid(column=1, row=0)
-        self.proficiency_bonus.labelString.set(
-            value=DataObjects.proficiency_bonus_map(self.character_information.level))
 
         # right column, 2nd spot, saving throws
         self.frm_saves = ttk.Frame(self, borderwidth=2, relief=SOLID)
         self.frm_saves.grid(column=1, row=1)
         ttk.Label(self.frm_saves, text="Saving Throws").grid(column=0, row=0, columnspan=2)
         saves = DataObjects.ability_scores()
-        self.skill_lines = []  # This array will hold all saving throw lines, and skill lines
         for index, save in enumerate(saves):
-            temp = CustomObjects.SkillLine(self.frm_saves, save, character_information)
-            temp.grid(column=0, row=index+1, sticky=W)
-            self.skill_lines.append(temp)
+            CustomObjects.SkillLine(self.frm_saves, save, self.controller).grid(column=0, row=index+1, sticky=W)
 
         # Right column, 3rd spot, skills box
         self.frm_skills = ttk.Frame(self, borderwidth=2, relief=SOLID)
@@ -81,32 +78,12 @@ class Scores(ttk.Frame):
         ttk.Label(self.frm_skills, text="Skills").grid(column=0, row=0, columnspan=2)
         skills = DataObjects.ability_skills()
         for index, skill in enumerate(skills):
-            temp = CustomObjects.SkillLine(self.frm_skills, skill, character_information)
-            temp.grid(column=0, row=index+1, sticky=W)
-            self.skill_lines.append(temp)
+            CustomObjects.SkillLine(self.frm_skills, skill, controller).grid(column=0, row=index+1, sticky=W)
 
 
         # Right column, 4th spot, passive perception
         self.passive_perception = CustomObjects.SingleSkill(self, "Passive Perception")
         self.passive_perception.grid(column=1, row=3)
-
-
-    def ability_updated(self, *args):
-        # args[0] here, is defined as the name of the ability for the ability box that was edited
-        ability = args[0]
-
-        # Need to find the ability box that was updated
-        for index, box in enumerate(self.ability_boxes):
-            if box.ability == ability:
-                # Place the entered Ability score into the Character Data Object
-                self.character_information.ability_scores[ability] = box.entryString.get()
-                # Call the function defined in the ability box, it calculates and updates the modifier
-                box.text_entered()
-
-        # Update the bonus for any related skills, and saving throws
-        for index, line in enumerate(self.skill_lines):
-            if line.related_ability == ability:
-                line.update_bonus()
 
 
 class Features(ttk.Frame):
@@ -135,8 +112,9 @@ class Life(ttk.Frame):
         frm_major_attributes = ttk.Frame(self)
         frm_major_attributes.grid(column=0, row=0)
 
-        ent_max_health = CustomObjects.LabeledEntry(frm_major_attributes, "Max Hit Points")
-        ent_max_health.grid(column=0, row=0)
+        self.ent_max_health = CustomObjects.LabeledEntry(frm_major_attributes, "Max Hit Points")
+        self.ent_max_health.grid(column=0, row=0)
+        self.ent_max_health.bind("<<testEvent>>", self.lifebox_triggered)
         lbl_initiative = CustomObjects.MajorAttribute(frm_major_attributes, "Initiative")
         lbl_initiative.grid(column=1, row=0)
         lbl_speed = CustomObjects.MajorAttribute(frm_major_attributes, "Speed")
@@ -154,6 +132,10 @@ class Life(ttk.Frame):
         lbl_hitDice.grid(column=0, row=2)
         lbl_deathRolls = CustomObjects.LabeledEntry(frm_health, "Death Saves")
         lbl_deathRolls.grid(column=1, row=2)
+
+    def lifebox_triggered(self, *args):
+        print("Life box triggered")
+        self.ent_max_health.entryString.set()
 
 
 class Limits(ttk.Frame):

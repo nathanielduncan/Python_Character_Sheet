@@ -1,37 +1,31 @@
 from tkinter import *
 from tkinter import ttk
 
-import CharacterPage
-import Character
+from Controller import Controller
 
 
-def run_program():
-    character_information = Character.CharacterData()
+class Application:
+    def __init__(self):
+        self.window = Tk()
+        self.window.title("Character Sheet")
 
-    window = Tk()
-    window.title("Character Sheet")
-    main_frame = CharacterPage.CharacterPage(window, character_information)
-    main_frame.grid(column=0, row=0, columnspan=2)
+        # Define the controller, it contains the model and view
+        # It acts as the go between for each
+        controller = Controller(self.window)
 
-    ttk.Label(window, text="The Content of the SRD 5.1 may be distributed under The CC-BY-4.0 license.")\
-        .grid(column=0, row=1)
+        # Testing stuff
+        ttk.Label(self.window, text="The Content of the SRD 5.1 may be distributed under The CC-BY-4.0 license.")\
+            .grid(column=0, row=1)
 
-    def test_button():
-        print(character_information.ability_scores)
-        print(character_information.ability_modifiers)
-        print(character_information.skill_proficiencies)
-    ttk.Button(window, text="Test", command=test_button).grid(column=1, row=1)
+        def test_button():
+            print(controller.model.character.ability_scores)
+            print(controller.model.character.ability_modifiers)
+            print(controller.model.character.skill_proficiencies)
+        ttk.Button(self.window, text="Test", command=test_button).grid(column=1, row=1)
 
-    # configure style
-    window.style = ttk.Style(window)
-    window.style.configure('TFrame', background="white")
-    window.style.configure('TLabel', background="white")
-    window.style.configure('TButton', background="white")
-    window.style.configure('TRadiobutton', background="white")
-
-    window.mainloop()
+        controller.model.character.name = "Nate"
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    run_program()
+    app = Application()
+    app.window.mainloop()
