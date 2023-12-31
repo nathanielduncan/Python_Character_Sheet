@@ -7,12 +7,12 @@ class CharacterData:
         self.proficiency_bonus = 2
 
         self.ability_scores = {
-            "Strength": "10",
-            "Dexterity": "10",
-            "Constitution": "10",
-            "Intelligence": "10",
-            "Wisdom": "10",
-            "Charisma": "10"
+            "Strength": "",
+            "Dexterity": "",
+            "Constitution": "",
+            "Intelligence": "",
+            "Wisdom": "",
+            "Charisma": ""
         }
 
         self.ability_modifiers = {

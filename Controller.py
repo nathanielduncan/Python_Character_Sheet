@@ -1,3 +1,4 @@
+import DataObjects
 from Model import Model
 from View import View
 
@@ -46,3 +47,14 @@ class Controller:
         if action == "remove":
             self.model.remove_proficiency(skill)
 
+    def get_ability_list(self):
+        return list(self.model.character.ability_scores)
+
+    def get_skill_list(self):
+        skills = list(self.model.character.skill_bonuses)
+        for x in range(6):  # Remove the saves from this list
+            skills.pop(0)
+        return skills
+
+    def get_related_ability(self, skill):
+        return DataObjects.skill_to_score_map(skill)

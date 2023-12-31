@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import ttk
 
 import CustomObjects
-import DataObjects
 
 
 class PlayerInformation(ttk.Frame):
@@ -55,8 +54,8 @@ class Scores(ttk.Frame):
         self.frm_abilities = ttk.Frame(self, borderwidth=2, relief=SOLID)
         self.frm_abilities.grid(column=0, row=0, rowspan=4)
         ttk.Label(self.frm_abilities, text="Ability Scores").grid(column=0, row=0)
-        abilities = DataObjects.ability_scores()  # Get the list of abilities, TODO:: change to model call?
-
+        abilities = self.controller.get_ability_list()  # Get the list of abilities
+        # Create a box for each ability
         for index, ability in enumerate(abilities):  # For each box
             CustomObjects.AbilityBox(self.frm_abilities, ability, self.controller).grid(column=0, row=index + 1)
 
@@ -68,15 +67,15 @@ class Scores(ttk.Frame):
         self.frm_saves = ttk.Frame(self, borderwidth=2, relief=SOLID)
         self.frm_saves.grid(column=1, row=1)
         ttk.Label(self.frm_saves, text="Saving Throws").grid(column=0, row=0, columnspan=2)
-        saves = DataObjects.ability_scores()
-        for index, save in enumerate(saves):
+        # Use the same 'abilities' list as above for the saves
+        for index, save in enumerate(abilities):
             CustomObjects.SkillLine(self.frm_saves, save, self.controller).grid(column=0, row=index+1, sticky=W)
 
         # Right column, 3rd spot, skills box
         self.frm_skills = ttk.Frame(self, borderwidth=2, relief=SOLID)
         self.frm_skills.grid(column=1, row=2)
         ttk.Label(self.frm_skills, text="Skills").grid(column=0, row=0, columnspan=2)
-        skills = DataObjects.ability_skills()
+        skills = self.controller.get_skill_list()
         for index, skill in enumerate(skills):
             CustomObjects.SkillLine(self.frm_skills, skill, controller).grid(column=0, row=index+1, sticky=W)
 
