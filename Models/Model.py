@@ -1,11 +1,14 @@
 from Models import Character
 from Models import DataObjects
+from Models.DatabaseAPI import DatabaseAPI
 
 
 class Model:
     def __init__(self, controller):
         self.controller = controller
         self.character = Character.CharacterData()
+
+        self.databaseAPI = DatabaseAPI()
 
 
     def call_registered(self, field, new_value):
