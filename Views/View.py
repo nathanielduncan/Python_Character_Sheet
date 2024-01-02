@@ -1,7 +1,7 @@
 from tkinter import ttk
 
-import CharacterPage
-import MainMenu
+from Views import CharacterPage
+from Views import MainMenu
 
 
 class View:

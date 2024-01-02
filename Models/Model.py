@@ -1,5 +1,5 @@
-import Character
-import DataObjects
+from Models import Character
+from Models import DataObjects
 
 
 class Model:

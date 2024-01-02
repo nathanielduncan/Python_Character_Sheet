@@ -1,6 +1,6 @@
-import DataObjects
-from Model import Model
-from View import View
+from Models.Model import Model
+from Models import DataObjects
+from Views.View import View
 
 
 class Controller:
