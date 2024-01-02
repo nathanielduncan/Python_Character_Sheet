@@ -10,6 +10,12 @@ class Controller:
         self.model = Model(self)
         self.view = View(window, self)
 
+    def show_main_menu(self):
+        self.view.show_main_menu()
+
+    def show_character_page(self):
+        self.view.show_character_page()
+
     def fill_character_data(self, character_name):
         """
         This function is to be called when the Character page first opens. It will take all the data from the character
