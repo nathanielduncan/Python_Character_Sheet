@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 
-import CustomObjects
+from Views import CustomObjects
 
 
 class PlayerInformation(ttk.Frame):
@@ -69,7 +69,7 @@ class Scores(ttk.Frame):
         ttk.Label(self.frm_saves, text="Saving Throws").grid(column=0, row=0, columnspan=2)
         # Use the same 'abilities' list as above for the saves
         for index, save in enumerate(abilities):
-            CustomObjects.SkillLine(self.frm_saves, save, self.controller).grid(column=0, row=index+1, sticky=W)
+            CustomObjects.SkillLine(self.frm_saves, save, self.controller).grid(column=0, row=index + 1, sticky=W)
 
         # Right column, 3rd spot, skills box
         self.frm_skills = ttk.Frame(self, borderwidth=2, relief=SOLID)
@@ -77,7 +77,7 @@ class Scores(ttk.Frame):
         ttk.Label(self.frm_skills, text="Skills").grid(column=0, row=0, columnspan=2)
         skills = self.controller.get_skill_list()
         for index, skill in enumerate(skills):
-            CustomObjects.SkillLine(self.frm_skills, skill, controller).grid(column=0, row=index+1, sticky=W)
+            CustomObjects.SkillLine(self.frm_skills, skill, controller).grid(column=0, row=index + 1, sticky=W)
 
 
         # Right column, 4th spot, passive perception
@@ -94,7 +94,7 @@ class Features(ttk.Frame):
         frm_race_traits.grid(column=0, row=0)
         ttk.Label(frm_race_traits, text="Racial Traits").grid(column=0, row=0)
         for index in range(5):
-            CustomObjects.Feature(frm_race_traits, "Feature").grid(column=0, row=index+1)
+            CustomObjects.Feature(frm_race_traits, "Feature").grid(column=0, row=index + 1)
 
         # Frame for the background feature
         frm_background_features = ttk.Frame(self, borderwidth=2, relief=SOLID)
@@ -147,7 +147,7 @@ class Limits(ttk.Frame):
         ttk.Label(self, text="Resets On").grid(column=2, row=1)
         ttk.Label(self, text="Used").grid(column=3, row=1)
         for index in range(5):
-            CustomObjects.LimitedFeature(self).grid(column=0, row=index+2, columnspan=4)
+            CustomObjects.LimitedFeature(self).grid(column=0, row=index + 2, columnspan=4)
 
 
 class Proficiencies(ttk.Frame):
@@ -159,7 +159,7 @@ class Proficiencies(ttk.Frame):
         frm_armor.grid(column=0, row=0)
         ttk.Label(frm_armor, text="Armor Attributes").grid(column=0, row=0)
         for index in range(3):
-            CustomObjects.ArmorLine(frm_armor).grid(column=0, row=index+1)
+            CustomObjects.ArmorLine(frm_armor).grid(column=0, row=index + 1)
 
         # Frame for Proficiencies
         frm_proficiencies = ttk.Frame(self, borderwidth=2, relief=SOLID)

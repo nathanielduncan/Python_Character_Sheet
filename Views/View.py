@@ -1,7 +1,7 @@
 from tkinter import ttk
 
-import CharacterPage
-import MainMenu
+from Views import CharacterPage
+from Views import MainMenu
 
 
 class View:
@@ -22,7 +22,7 @@ class View:
 
     def show_character_page(self):
         self.main_menu.grid_forget()
-        self.character_page.grid(column=0, row=0)
+        self.character_page.grid(column=0, row=0, columnspan=2)
         self.center_window()
 
     def show_main_menu(self):

@@ -1,6 +1,6 @@
 from tkinter import ttk
 
-import CustomFrames
+from Views import CustomFrames
 
 # This class is the primary ttk.Frame that houses all UI for the Window.
 # There are 7 Frames inside of it, they are defined in Custom Frames

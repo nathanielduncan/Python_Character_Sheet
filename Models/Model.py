@@ -1,5 +1,6 @@
-import Character
-import DataObjects
+from Models import Character
+from Models import DataObjects
+from Models.DatabaseAPI import DatabaseAPI
 
 
 class Model:
@@ -7,6 +8,22 @@ class Model:
         self.controller = controller
         self.character = Character.CharacterData()
 
+        self.databaseAPI = DatabaseAPI()
+
+    def load_character(self, character_name):
+        # Load character by name, returns a dict. Keys match the DB table columns
+        character_data = self.databaseAPI.load_character(character_name)
+
+        self.set_name(character_data["Name"])
+        self.set_level(character_data["Level"])
+        # set_level also sets the proficiency bonus
+        self.set_ability("Strength", character_data["Strength Score"])
+        self.set_ability("Dexterity", character_data["Dexterity Score"])
+        self.set_ability("Constitution", character_data["Constitution Score"])
+        self.set_ability("Intelligence", character_data["Intelligence Score"])
+        self.set_ability("Wisdom", character_data["Wisdom Score"])
+        self.set_ability("Charisma", character_data["Charisma Score"])
+        # Each set_ability also sets the ability modifiers and skill bonuses
 
     def call_registered(self, field, new_value):
         self.controller.triggered(field, new_value)
@@ -14,6 +31,16 @@ class Model:
     def set_name(self, new_value):
         self.character.name = new_value
         self.controller.triggered("name", new_value)
+
+    def set_level(self, new_value):
+        self.character.level = new_value
+        self.controller.triggered("level", new_value)
+
+        self.set_proficiency_bonus()
+
+    def set_proficiency_bonus(self):
+        self.character.proficiency_bonus = DataObjects.proficiency_bonus_map(self.character.level)
+        self.controller.triggered("proficiency_bonus", self.character.proficiency_bonus)
 
     def set_ability(self, ability, new_value):
         self.character.ability_scores[ability] = new_value
@@ -38,10 +65,11 @@ class Model:
 
     def set_skill_bonus(self, ability):
         modifier = self.character.ability_modifiers[ability]
-        if modifier == "":  # If the ability value, and the related modifier is empty, no math is done
+        # If the ability value, and the related modifier is empty, no math is done
+        if modifier == "" or modifier is None:
             mod_with_proficiency = ""
         else:  # If not empty, consider the proficiency bonus
-            mod_with_proficiency = str(int(modifier) + self.character.proficiency_bonus)
+            mod_with_proficiency = str(int(modifier) + int(self.character.proficiency_bonus))
 
         related_skills = DataObjects.score_to_skill_dict(ability)
 
