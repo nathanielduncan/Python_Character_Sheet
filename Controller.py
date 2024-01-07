@@ -15,13 +15,7 @@ class Controller:
 
     def show_character_page(self):
         self.view.show_character_page()
-
-    def fill_character_data(self, character_name):
-        """
-        This function is to be called when the Character page first opens. It will take all the data from the character
-        object, and fill the corresponding widgets in the view.
-        :return:
-        """
+        self.model.load_character("New_Character")
 
     def register(self, widget, field):
         """
@@ -37,6 +31,14 @@ class Controller:
         self.registered_widgets.append(to_register)
 
     def triggered(self, field, new_value):
+        """
+        Called by the model when it changes some data. the model provides the field name that was changed and the
+        new value of that filed. This function then looks at all the registered widgets, to see if they have requested
+        that field. If it has, it gives the widget the new value. The widget can do whatever with that knowledge.
+        :param field:
+        :param new_value:
+        :return:
+        """
         for item in self.registered_widgets:
             if item["field"] == field:
                 item["widget"].update_field(item["field"], new_value)

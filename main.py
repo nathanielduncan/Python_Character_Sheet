@@ -11,15 +11,15 @@ class Application:
 
         # Define the controller, it contains the model and view
         # It acts as the go between for each
-        controller = Controller(self.window)
-        controller.show_main_menu()
+        self.controller = Controller(self.window)
+        self.controller.show_main_menu()
 
         # Testing stuff
         ttk.Label(self.window, text="The Content of the SRD 5.1 may be distributed under The CC-BY-4.0 license.")\
             .grid(column=0, row=1)
 
         def test_button():
-            pass
+            print(self.controller.model.character.name)
         ttk.Button(self.window, text="Test", command=test_button).grid(column=1, row=1)
 
 

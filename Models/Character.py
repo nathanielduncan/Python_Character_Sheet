@@ -3,8 +3,8 @@
 class CharacterData:
     def __init__(self):
         self.name = ""
-        self.level = 1
-        self.proficiency_bonus = 2
+        self.level = None
+        self.proficiency_bonus = None
 
         self.ability_scores = {
             "Strength": "",
