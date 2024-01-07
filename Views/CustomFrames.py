@@ -60,7 +60,7 @@ class Scores(ttk.Frame):
             CustomObjects.AbilityBox(self.frm_abilities, ability, self.controller).grid(column=0, row=index + 1)
 
         # Right column, 1st spot, Proficiency bonus
-        self.proficiency_bonus = CustomObjects.SingleSkill(self, "Proficiency Bonus")
+        self.proficiency_bonus = CustomObjects.ProfBonusBox(self, self.controller)
         self.proficiency_bonus.grid(column=1, row=0)
 
         # right column, 2nd spot, saving throws
@@ -81,7 +81,7 @@ class Scores(ttk.Frame):
 
 
         # Right column, 4th spot, passive perception
-        self.passive_perception = CustomObjects.SingleSkill(self, "Passive Perception")
+        self.passive_perception = CustomObjects.PassiveSkillBox(self, "Perception", self.controller)
         self.passive_perception.grid(column=1, row=3)
 
 

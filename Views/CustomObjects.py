@@ -92,17 +92,48 @@ class SkillLine(ttk.Frame):
             self.controller.proficiency_entered('remove', self.skill)
 
 
-class SingleSkill(ttk.Frame):
-    def __init__(self, parent, skill):
+class ProfBonusBox(ttk.Frame):
+    def __init__(self, parent, controller):
         ttk.Frame.__init__(self, parent, borderwidth=2, relief=SOLID)
+        self.controller = controller
 
         self.labelString = StringVar()
-
         self.lbl_bonus = ttk.Label(self, text="0", textvariable=self.labelString)
-        self.lbl_skill = ttk.Label(self, text=skill)
+
+        self.lbl_proficiency = ttk.Label(self, text="Proficiency Bonus")
+
+        self.lbl_bonus.grid(column=0, row=0)
+        self.lbl_proficiency.grid(column=1, row=0)
+
+        self.controller.register(self, "proficiency_bonus")
+
+    def update_field(self, field, new_val):
+        if field == "proficiency_bonus":
+            self.labelString.set(new_val)
+
+
+class PassiveSkillBox(ttk.Frame):
+    def __init__(self, parent, skill, controller):
+        ttk.Frame.__init__(self, parent, borderwidth=2, relief=SOLID)
+        self.controller = controller
+        self.skill = skill
+
+        self.labelString = StringVar()
+        self.lbl_bonus = ttk.Label(self, text="0", textvariable=self.labelString)
+
+        self.lbl_skill = ttk.Label(self, text="Passive " + skill)
 
         self.lbl_bonus.grid(column=0, row=0)
         self.lbl_skill.grid(column=1, row=0)
+
+        self.controller.register(self, self.skill + "_skill")
+
+    def update_field(self, field, new_val):
+        if field == self.skill + "_skill":
+            if new_val == "":
+                self.labelString.set("")
+            else:
+                self.labelString.set(str(int(new_val) + 10))
 
 
 class LabeledEntry(ttk.Frame):
