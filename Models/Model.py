@@ -9,8 +9,8 @@ class Model:
     def __init__(self, controller):
         self.controller = controller
         self.character = Character.CharacterData()
-        self.class_options = []
-        self.race_options = []
+        self.class_options = {}
+        self.race_options = {}
 
         self.databaseAPI = DatabaseAPI()
         self.load_classes()
@@ -22,8 +22,8 @@ class Model:
 
         self.set_name(character_data["Name"])
         self.set_level(character_data["Level"])
-        self.set_class(character_data["Class"])
-        self.set_race(character_data["Race"])
+        self.set_class(self.class_options[character_data["Class"]].name)
+        self.set_race(self.race_options[character_data["Race"]].name)
         # set_level also sets the proficiency bonus
         self.set_ability("Strength", character_data["Strength Score"])
         self.set_ability("Dexterity", character_data["Dexterity Score"])
@@ -121,9 +121,31 @@ class Model:
     def load_classes(self):
         classes = self.databaseAPI.load_classes()
         for claas in classes:
-            self.class_options.append(CharacterClass(claas))
+            # claas[0] is the name of the class, so this saves in dictionary format,
+            # Class_name: Class_object
+            self.class_options[claas[0]] = CharacterClass(claas)
+
+
+        # Build empty character class
+        empty_class = []
+        for i in enumerate(classes[0]):
+            empty_class.append("")
+        empty_class[0] = "None"
+        self.class_options[""] = CharacterClass(empty_class)
+
+
 
     def load_races(self):
         races = self.databaseAPI.load_races()
         for race in races:
-            self.race_options.append(CharacterRace(race))
+            # race[0] is the name of the class, so this saves in dictionary format,
+            # Race_name: Race_object
+            self.race_options[race[0]] = (CharacterRace(race))
+
+        # Build empty character race
+        empty_race = []
+        for i in enumerate(races[0]):
+            empty_race.append("")
+        empty_race[0] = "None"
+        self.race_options[""] = CharacterRace(empty_race)
+

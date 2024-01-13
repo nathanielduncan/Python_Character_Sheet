@@ -76,13 +76,13 @@ class Controller:
     def get_class_names(self):
         names = []
         for claas in self.model.class_options:
-            names.append(claas.name)
+            names.append(claas)
 
         return names
 
     def get_race_names(self):
         races = []
         for race in self.model.race_options:
-            races.append(race.name)
+            races.append(race)
 
         return races
