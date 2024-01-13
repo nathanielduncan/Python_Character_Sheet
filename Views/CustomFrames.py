@@ -10,20 +10,19 @@ class PlayerInformation(ttk.Frame):
 
         self.controller = controller
 
-        self.character_name = CustomObjects.LabeledEntry(self, "Character Name")
-        self.character_name.grid(column=0, row=0)
-        # If a name is entered into the Name box, it will save to the data object
-        self.character_name.entryString.trace_add("write", lambda a,b,c: self.controller.name_entered(
-            self.character_name.entryString.get()))
+        self.character_name = CustomObjects.CharacterNameBox(self, self.controller)
+        self.character_name.grid(column=0, row=0, sticky=W)
 
         # Frame for the other 6 player information items
         self.frm_player_items = ttk.Frame(self)
-        self.frm_player_items.grid(column=1, row=0)
-        # Item 1, level and class
-        self.frm_class = CustomObjects.LabeledEntry(self.frm_player_items, "Class")
+        self.frm_player_items.grid(column=1, row=0, sticky=E)
+        # Item 1, class
+        self.frm_class = CustomObjects.LabeledOptions(self.frm_player_items,
+                                                      "class", self.controller.get_class_names(), self.controller)
         self.frm_class.grid(column=0, row=0)
         # Item 2, Race
-        self.frm_race = CustomObjects.LabeledEntry(self.frm_player_items, "Race")
+        self.frm_race = CustomObjects.LabeledOptions(self.frm_player_items,
+                                                     "race", self.controller.get_race_names(), self.controller)
         self.frm_race.grid(column=1, row=0)
         # Item 3, Background
         self.frm_background = CustomObjects.LabeledEntry(self.frm_player_items, "Background")
@@ -52,7 +51,7 @@ class Scores(ttk.Frame):
 
         # Left abilities frame
         self.frm_abilities = ttk.Frame(self, borderwidth=2, relief=SOLID)
-        self.frm_abilities.grid(column=0, row=0, rowspan=4)
+        self.frm_abilities.grid(column=0, row=0, rowspan=4, sticky=NS)
         ttk.Label(self.frm_abilities, text="Ability Scores").grid(column=0, row=0)
         abilities = self.controller.get_ability_list()  # Get the list of abilities
         # Create a box for each ability
@@ -61,28 +60,27 @@ class Scores(ttk.Frame):
 
         # Right column, 1st spot, Proficiency bonus
         self.proficiency_bonus = CustomObjects.ProfBonusBox(self, self.controller)
-        self.proficiency_bonus.grid(column=1, row=0)
+        self.proficiency_bonus.grid(column=1, row=0, sticky=EW)
 
         # right column, 2nd spot, saving throws
         self.frm_saves = ttk.Frame(self, borderwidth=2, relief=SOLID)
-        self.frm_saves.grid(column=1, row=1)
-        ttk.Label(self.frm_saves, text="Saving Throws").grid(column=0, row=0, columnspan=2)
+        self.frm_saves.grid(column=1, row=1, sticky=EW)
+        ttk.Label(self.frm_saves, text="Saving Throws", justify=CENTER).grid(column=0, row=0)
         # Use the same 'abilities' list as above for the saves
         for index, save in enumerate(abilities):
             CustomObjects.SkillLine(self.frm_saves, save, self.controller).grid(column=0, row=index + 1, sticky=W)
 
         # Right column, 3rd spot, skills box
         self.frm_skills = ttk.Frame(self, borderwidth=2, relief=SOLID)
-        self.frm_skills.grid(column=1, row=2)
-        ttk.Label(self.frm_skills, text="Skills").grid(column=0, row=0, columnspan=2)
+        self.frm_skills.grid(column=1, row=2, sticky=EW)
+        ttk.Label(self.frm_skills, text="Skills", justify=CENTER).grid(column=0, row=0)
         skills = self.controller.get_skill_list()
         for index, skill in enumerate(skills):
             CustomObjects.SkillLine(self.frm_skills, skill, controller).grid(column=0, row=index + 1, sticky=W)
 
-
         # Right column, 4th spot, passive perception
         self.passive_perception = CustomObjects.PassiveSkillBox(self, "Perception", self.controller)
-        self.passive_perception.grid(column=1, row=3)
+        self.passive_perception.grid(column=1, row=3, sticky=EW)
 
 
 class Features(ttk.Frame):

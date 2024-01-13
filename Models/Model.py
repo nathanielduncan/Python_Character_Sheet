@@ -1,14 +1,20 @@
 from Models import Character
 from Models import DataObjects
 from Models.DatabaseAPI import DatabaseAPI
+from Models.CharacterClass import CharacterClass
+from Models.CharacterRace import CharacterRace
 
 
 class Model:
     def __init__(self, controller):
         self.controller = controller
         self.character = Character.CharacterData()
+        self.class_options = []
+        self.race_options = []
 
         self.databaseAPI = DatabaseAPI()
+        self.load_classes()
+        self.load_races()
 
     def load_character(self, character_name):
         # Load character by name, returns a dict. Keys match the DB table columns
@@ -16,6 +22,8 @@ class Model:
 
         self.set_name(character_data["Name"])
         self.set_level(character_data["Level"])
+        self.set_class(character_data["Class"])
+        self.set_race(character_data["Race"])
         # set_level also sets the proficiency bonus
         self.set_ability("Strength", character_data["Strength Score"])
         self.set_ability("Dexterity", character_data["Dexterity Score"])
@@ -37,6 +45,14 @@ class Model:
         self.controller.triggered("level", new_value)
 
         self.set_proficiency_bonus()
+
+    def set_class(self, new_value):
+        self.character.claas = new_value
+        self.controller.triggered("class", new_value)
+
+    def set_race(self, new_value):
+        self.character.race = new_value
+        self.controller.triggered("race", new_value)
 
     def set_proficiency_bonus(self):
         self.character.proficiency_bonus = DataObjects.proficiency_bonus_map(self.character.level)
@@ -101,3 +117,13 @@ class Model:
         self.character.skill_proficiencies.remove(skill)
         self.set_skill_bonus(related_ability)
         # Does not call any registered fields
+
+    def load_classes(self):
+        classes = self.databaseAPI.load_classes()
+        for claas in classes:
+            self.class_options.append(CharacterClass(claas))
+
+    def load_races(self):
+        races = self.databaseAPI.load_races()
+        for race in races:
+            self.race_options.append(CharacterRace(race))

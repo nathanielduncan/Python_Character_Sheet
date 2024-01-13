@@ -5,6 +5,8 @@ class CharacterData:
         self.name = ""
         self.level = None
         self.proficiency_bonus = None
+        self.claas = None
+        self.race = None
 
         self.ability_scores = {
             "Strength": "",

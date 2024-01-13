@@ -1,3 +1,4 @@
+from tkinter import *
 from tkinter import ttk
 
 from Views import CustomFrames
@@ -15,7 +16,7 @@ class CharacterPage(ttk.Frame):
 
         # Top Player Frame
         self.frm_player_information = CustomFrames.PlayerInformation(self, self.controller)
-        self.frm_player_information.grid(column=0, row=0, columnspan=3)
+        self.frm_player_information.grid(column=0, row=0, columnspan=3, sticky=EW)
 
         # Left scores frame
         self.frm_scores = CustomFrames.Scores(self, self.controller)

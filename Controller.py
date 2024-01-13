@@ -43,8 +43,14 @@ class Controller:
             if item["field"] == field:
                 item["widget"].update_field(item["field"], new_value)
 
-    def name_entered(self, name, *args):
+    def name_entered(self, name):
         self.model.set_name(name)
+
+    def class_entered(self, class_choice):
+        self.model.set_class(class_choice)
+
+    def race_entered(self, race_choice):
+        self.model.set_race(race_choice)
 
     def ability_entered(self, ability, new_value):
         self.model.set_ability(ability, new_value)
@@ -66,3 +72,17 @@ class Controller:
 
     def get_related_ability(self, skill):
         return DataObjects.skill_to_score_map(skill)
+
+    def get_class_names(self):
+        names = []
+        for claas in self.model.class_options:
+            names.append(claas.name)
+
+        return names
+
+    def get_race_names(self):
+        races = []
+        for race in self.model.race_options:
+            races.append(race.name)
+
+        return races

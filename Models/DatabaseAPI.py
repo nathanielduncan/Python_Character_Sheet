@@ -21,3 +21,11 @@ class DatabaseAPI:
         results = self.cursor.execute(sql_string)
         return self.dict_factory(self.cursor, results.fetchone())
 
+    def load_classes(self):
+        sql_string = "SELECT * FROM Classes"
+        return self.cursor.execute(sql_string).fetchall()
+
+    def load_races(self):
+        sql_string = "SELECT * FROM Races"
+        return self.cursor.execute(sql_string).fetchall()
+

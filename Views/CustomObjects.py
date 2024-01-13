@@ -4,7 +4,6 @@ from tkinter import font
 import re
 
 
-
 class AbilityBox(ttk.Frame):
     def __init__(self, parent, ability, controller):
         # Initialize the Frame that is this object
@@ -45,7 +44,6 @@ class AbilityBox(ttk.Frame):
 
         # Register with the controller, to be notified if the ability modifier is updated
         self.controller.register(self, self.ability + "_mod")
-
 
     def ability_updated(self, *args):
         # Let the controller know that the ability score was updated
@@ -134,6 +132,64 @@ class PassiveSkillBox(ttk.Frame):
                 self.labelString.set("")
             else:
                 self.labelString.set(str(int(new_val) + 10))
+
+
+class CharacterNameBox(ttk.Frame):
+    def __init__(self, parent, controller):
+        ttk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        self.name = StringVar()
+        self.name.trace_add("write", self.name_entered)
+        entryFont = font.Font(family='Georgia', size=15)
+
+        self.ent_name = ttk.Entry(self, width=25, font=entryFont, justify='center', textvariable=self.name)
+        self.lbl_label = ttk.Label(self, text="Character Name")
+
+        self.ent_name.grid(column=0, row=0)
+        self.lbl_label.grid(column=0, row=1)
+
+        self.controller.register(self, "name")
+
+    def name_entered(self, *args):
+        # Called by changes to ent_name
+        self.controller.name_entered(self.name.get())
+
+    def update_field(self, field, new_val):
+        # Called by the controller, since self is registered
+        if field == "name":
+            self.name.set(new_val)
+
+
+class LabeledOptions(ttk.Frame):
+    def __init__(self, parent, title, options, controller):
+        ttk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.title = title
+
+        self.option = StringVar()
+        custom_font = font.Font(family='Georgia', size=15)
+        self.cbox_optionsList = ttk.Combobox(self, textvariable=self.option, values=options,
+                                             font=custom_font, width=9)
+        self.cbox_optionsList.state(["readonly"])
+
+        self.label = ttk.Label(self, text=self.title)
+
+        self.cbox_optionsList.grid(column=0, row=0)
+        self.label.grid(column=0, row=1)
+
+        self.cbox_optionsList.bind("<<ComboboxSelected>>", self.option_selected)
+        self.controller.register(self, self.title)
+
+    def option_selected(self, *args):
+        if self.title == "class":
+            self.controller.class_entered(self.option.get())
+        if self.title == "race":
+            self.controller.race_entered(self.option.get())
+
+    def update_field(self, field, new_value):
+        if field == self.title:
+            self.option.set(new_value)
 
 
 class LabeledEntry(ttk.Frame):
