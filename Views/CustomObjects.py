@@ -279,6 +279,88 @@ class ArmorProficiencies(ttk.Frame):
             else:
                 self.shield_proficiency.set(FALSE)
 
+
+class WeaponProficiencies(ttk.Frame):
+    def __init__(self, parent, controller):
+        ttk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        ttk.Label(self, text="Weapon Proficiencies").grid(column=0, row=0, columnspan=2)
+
+        self.simple_proficiency = BooleanVar(value=FALSE)
+        self.martial_proficiency = BooleanVar(value=FALSE)
+        self.other_proficiency = StringVar()
+
+        rb_simple = ttk.Radiobutton(self, text="Simple Weapons", state='disabled', variable=self.simple_proficiency)
+        rb_martial = ttk.Radiobutton(self, text="Martial Weapons", state='disabled', variable=self.martial_proficiency)
+        self.lbl_other = ttk.Label(self, text="Other Weapons", state='disabled', textvariable=self.other_proficiency)
+
+        rb_simple.grid(column=0, row=1)
+        rb_martial.grid(column=1, row=1)
+        # lbl_other gets .grid when fields are updated
+
+        self.controller.register(self, "class")
+
+    def update_field(self, field, new_value):
+        if field == "class":
+            other_weapons = new_value.weapon_proficiencies
+
+            # Check for simple weapon proficiency
+            if new_value.weapon_proficiencies.count("Simple Weapons") != 0:
+                self.simple_proficiency.set(TRUE)
+                other_weapons.remove("Simple Weapons")
+            else:
+                self.simple_proficiency.set(FALSE)
+            # Check for martial weapon proficiency
+            if new_value.weapon_proficiencies.count("Martial Weapons") != 0:
+                self.martial_proficiency.set(TRUE)
+                other_weapons.remove("Martial Weapons")
+            else:
+                self.martial_proficiency.set(FALSE)
+            # Other Weapon proficiencies, if none, do not show the label
+            self.other_proficiency.set("Other Weapons: " + str(other_weapons))
+            if len(other_weapons) > 1:
+                self.lbl_other.grid(column=0, row=2, columnspan=2)
+            else:
+                self.lbl_other.grid_forget()
+
+
+class ListProficiencies(ttk.Frame):
+    def __init__(self, parent, description, controller):
+        ttk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.description = description
+
+        ttk.Label(self, text=description).grid(column=0, row=0)
+        self.items_frame = ttk.Frame(self)
+        self.items_frame.grid(column=0, row=1)
+
+        ttk.Label(self.items_frame, text="None").grid(column=0, row=0)
+
+        if self.description == "Tool Proficiencies":
+            self.controller.register(self, "class")
+        if self.description == "Language Proficiencies":
+            self.controller.register(self, "race")
+
+    def update_field(self, field, new_value):
+        if field == "class":
+            # Remove what is currently listed
+            for child in self.items_frame.winfo_children():
+                child.destroy()
+            # List the new items
+            for item in enumerate(new_value.tool_proficiencies):
+                ttk.Label(self.items_frame, text=item[1]).grid(column=0, row=item[0])
+
+        if field == "race":
+            # Remove what is currently listed
+            for child in self.items_frame.winfo_children():
+                child.destroy()
+            # List the new items
+            for item in enumerate(new_value.languages):
+                ttk.Label(self.items_frame, text=item[1]).grid(column=0, row=item[0])
+
+
+
 class Feature(ttk.Frame):
     def __init__(self, parent, feature):
         ttk.Frame.__init__(self, parent)

@@ -37,10 +37,6 @@ class PlayerInformation(ttk.Frame):
         self.frm_player = CustomObjects.LabeledEntry(self.frm_player_items, "Player Name")
         self.frm_player.grid(column=2, row=1)
 
-        # Item 7, Load Data Button
-        self.btn_loadData = ttk.Button(self.frm_player_items, text="Load Data")
-        self.btn_loadData.grid(column=3, row=0, rowspan=2)
-
 
 class Scores(ttk.Frame):
     def __init__(self, parent, controller):
@@ -167,23 +163,18 @@ class Proficiencies(ttk.Frame):
         frm_armor_proficiencies.grid(column=0, row=0, columnspan=2)
 
         # Additional Proficiencies Frame for Weapons
-        frm_weapon_proficiencies = ttk.Frame(frm_proficiencies)
+        frm_weapon_proficiencies = CustomObjects.WeaponProficiencies(frm_proficiencies, self.controller)
         frm_weapon_proficiencies.grid(column=0, row=1, columnspan=2)
-        ttk.Label(frm_weapon_proficiencies, text="Weapon Proficiencies").grid(column=0, row=2, columnspan=4)
-        for index in range(3):
-            ttk.Radiobutton(frm_weapon_proficiencies, text="Weapon type").grid(column=index, row=3)
+
         # Additional proficiencies Frame for languages
-        frm_language_proficiencies = ttk.Frame(frm_proficiencies)
-        frm_language_proficiencies.grid(column=0, row=2)
-        ttk.Label(frm_language_proficiencies, text="Language Proficiencies").grid(column=0, row=0)
-        for index in range(5):
-            ttk.Label(frm_language_proficiencies, text="Language").grid(column=0, row=index+1)
+        frm_language_proficiencies = CustomObjects.ListProficiencies(frm_proficiencies,
+                                                                     "Language Proficiencies", self.controller)
+        frm_language_proficiencies.grid(column=0, row=2, sticky=N)
+
         # Additional proficiencies Frame for Tools
-        frm_tool_proficiencies = ttk.Frame(frm_proficiencies)
-        frm_tool_proficiencies.grid(column=1, row=2)
-        ttk.Label(frm_tool_proficiencies, text="Tool Proficiencies").grid(column=0, row=0)
-        for index in range(5):
-            ttk.Label(frm_tool_proficiencies, text="Tool").grid(column=0, row=index+1)
+        frm_tool_proficiencies = CustomObjects.ListProficiencies(frm_proficiencies,
+                                                                 "Tool Proficiencies", self.controller)
+        frm_tool_proficiencies.grid(column=1, row=2, sticky=N)
 
 
 class Options(ttk.Frame):
