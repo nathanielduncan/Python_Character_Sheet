@@ -19,8 +19,7 @@ class Application:
             .grid(column=0, row=1)
 
         def test_button():
-            for claas in self.controller.model.class_options:
-                print(claas.print_all())
+            print(self.controller.model.character.claas)
         ttk.Button(self.window, text="Test", command=test_button).grid(column=1, row=1)
 
 

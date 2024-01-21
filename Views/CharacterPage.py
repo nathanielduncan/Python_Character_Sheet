@@ -27,7 +27,7 @@ class CharacterPage(ttk.Frame):
         self.frm_features.grid(column=0, row=5)
 
         # Center Life frame
-        self.frm_life = CustomFrames.Life(self)
+        self.frm_life = CustomFrames.Life(self, self.controller)
         self.frm_life.grid(column=1, row=1, rowspan=2)
 
         # Center limits frame
@@ -35,7 +35,7 @@ class CharacterPage(ttk.Frame):
         self.frm_limits.grid(column=1, row=3)
 
         # Right proficiencies frame
-        self.frm_proficiencies = CustomFrames.Proficiencies(self)
+        self.frm_proficiencies = CustomFrames.Proficiencies(self, self.controller)
         self.frm_proficiencies.grid(column=2, row=1, rowspan=3)
 
         # Bottom Left options frame

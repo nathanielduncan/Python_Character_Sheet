@@ -189,7 +189,7 @@ class LabeledOptions(ttk.Frame):
 
     def update_field(self, field, new_value):
         if field == self.title:
-            self.option.set(new_value)
+            self.option.set(new_value.name)
 
 
 class LabeledEntry(ttk.Frame):
@@ -207,6 +207,77 @@ class LabeledEntry(ttk.Frame):
         self.ent_entry.grid(column=0, row=0)
         self.lbl_label.grid(column=0, row=1)
 
+
+class HitDieBox(ttk.Frame):
+    def __init__(self, parent, controller):
+        ttk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        self.hitDie_string = StringVar()
+        # Customize the fonts
+        dieFont = font.Font(family='Georgia', size=15)
+
+        self.lbl_die = ttk.Label(self, font=dieFont, justify='center',
+                                 textvariable=self.hitDie_string)
+        self.lbl_description = ttk.Label(self, text="Hit Die", justify='center')
+
+        self.lbl_die.grid(column=0, row=0)
+        self.lbl_description.grid(column=0, row=1)
+
+        self.controller.register(self, "class")
+
+
+    def update_field(self, field, new_value):
+        if field == "class":
+            self.hitDie_string.set("D" + new_value.hit_die)
+
+
+class ArmorProficiencies(ttk.Frame):
+    def __init__(self, parent, controller):
+        ttk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        ttk.Label(self, text="Armor Proficiencies").grid(column=0, row=0, columnspan=4)
+
+        self.light_proficiency = BooleanVar(value=FALSE)
+        self.medium_proficiency = BooleanVar(value=FALSE)
+        self.heavy_proficiency = BooleanVar(value=FALSE)
+        self.shield_proficiency = BooleanVar(value=FALSE)
+
+        rb_light = ttk.Radiobutton(self, text="Light Armor", state='disabled', variable=self.light_proficiency)
+        rb_medium = ttk.Radiobutton(self, text="Medium Armor", state='disabled', variable=self.medium_proficiency)
+        rb_heavy = ttk.Radiobutton(self, text="Heavy Armor", state='disabled', variable=self.heavy_proficiency)
+        rb_shield = ttk.Radiobutton(self, text="Shields", state='disabled', variable=self.shield_proficiency)
+
+        rb_light.grid(column=0, row=1)
+        rb_medium.grid(column=1, row=1)
+        rb_heavy.grid(column=2, row=1)
+        rb_shield.grid(column=3, row=1)
+
+        self.controller.register(self, "class")
+
+    def update_field(self, field, new_value):
+        if field == "class":
+            # Check for light armor proficiency
+            if new_value.armor_proficiencies.count("Light Armor") != 0:
+                self.light_proficiency.set(TRUE)
+            else:
+                self.light_proficiency.set(FALSE)
+            # Check for medium armor proficiency
+            if new_value.armor_proficiencies.count("Medium Armor") != 0:
+                self.medium_proficiency.set(TRUE)
+            else:
+                self.medium_proficiency.set(FALSE)
+            # Check for heavy armor proficiency
+            if new_value.armor_proficiencies.count("Heavy Armor") != 0:
+                self.heavy_proficiency.set(TRUE)
+            else:
+                self.heavy_proficiency.set(FALSE)
+                # Check for shield proficiency
+            if new_value.armor_proficiencies.count("Shields") != 0:
+                self.shield_proficiency.set(TRUE)
+            else:
+                self.shield_proficiency.set(FALSE)
 
 class Feature(ttk.Frame):
     def __init__(self, parent, feature):

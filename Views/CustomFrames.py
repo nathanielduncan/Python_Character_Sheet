@@ -30,7 +30,6 @@ class PlayerInformation(ttk.Frame):
         # Item 4, Level
         self.frm_level = CustomObjects.LabeledEntry(self.frm_player_items, "Level exp/exp")
         self.frm_level.grid(column=0, row=1)
-        # TODO if the level entry updates, the proficiency bonus should update
         # Item 5, Alignment
         self.frm_Alignment = CustomObjects.LabeledEntry(self.frm_player_items, "Alignment")
         self.frm_Alignment.grid(column=1, row=1)
@@ -102,8 +101,9 @@ class Features(ttk.Frame):
 
 
 class Life(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         ttk.Frame.__init__(self, parent, borderwidth=2, relief=SOLID)
+        self.controller = controller
 
         # Frame for the top three items
         frm_major_attributes = ttk.Frame(self)
@@ -111,7 +111,6 @@ class Life(ttk.Frame):
 
         self.ent_max_health = CustomObjects.LabeledEntry(frm_major_attributes, "Max Hit Points")
         self.ent_max_health.grid(column=0, row=0)
-        self.ent_max_health.bind("<<testEvent>>", self.lifebox_triggered)
         lbl_initiative = CustomObjects.MajorAttribute(frm_major_attributes, "Initiative")
         lbl_initiative.grid(column=1, row=0)
         lbl_speed = CustomObjects.MajorAttribute(frm_major_attributes, "Speed")
@@ -125,14 +124,13 @@ class Life(ttk.Frame):
         lbl_hitPoints.grid(column=0, row=0, columnspan=2)
         lbl_tempPoints = CustomObjects.LabeledEntry(frm_health, "Temporary Hit Points")
         lbl_tempPoints.grid(column=0, row=1, columnspan=2)
-        lbl_hitDice = CustomObjects.LabeledEntry(frm_health, "Hit Dice")
-        lbl_hitDice.grid(column=0, row=2)
+
+        # Frame for Hit Die
+        self.lbl_hitDice = CustomObjects.HitDieBox(frm_health, self.controller)
+        self.lbl_hitDice.grid(column=0, row=2)
+
         lbl_deathRolls = CustomObjects.LabeledEntry(frm_health, "Death Saves")
         lbl_deathRolls.grid(column=1, row=2)
-
-    def lifebox_triggered(self, *args):
-        print("Life box triggered")
-        self.ent_max_health.entryString.set()
 
 
 class Limits(ttk.Frame):
@@ -149,8 +147,9 @@ class Limits(ttk.Frame):
 
 
 class Proficiencies(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         ttk.Frame.__init__(self, parent)
+        self.controller = controller
 
         # Frame for armor information
         frm_armor = ttk.Frame(self, borderwidth=2, relief=SOLID)
@@ -162,12 +161,11 @@ class Proficiencies(ttk.Frame):
         # Frame for Proficiencies
         frm_proficiencies = ttk.Frame(self, borderwidth=2, relief=SOLID)
         frm_proficiencies.grid(column=0, row=1)
+
         # Additional Proficiencies Frame for Armor
-        frm_armor_proficiencies = ttk.Frame(frm_proficiencies)
+        frm_armor_proficiencies = CustomObjects.ArmorProficiencies(frm_proficiencies, self.controller)
         frm_armor_proficiencies.grid(column=0, row=0, columnspan=2)
-        ttk.Label(frm_armor_proficiencies, text="Armor Proficiencies").grid(column=0, row=0, columnspan=4)
-        for index in range(4):
-            ttk.Radiobutton(frm_armor_proficiencies, text="Armor Type").grid(column=index, row=1)
+
         # Additional Proficiencies Frame for Weapons
         frm_weapon_proficiencies = ttk.Frame(frm_proficiencies)
         frm_weapon_proficiencies.grid(column=0, row=1, columnspan=2)

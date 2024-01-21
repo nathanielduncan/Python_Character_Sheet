@@ -3,6 +3,7 @@ from Models import DataObjects
 from Models.DatabaseAPI import DatabaseAPI
 from Models.CharacterClass import CharacterClass
 from Models.CharacterRace import CharacterRace
+from Models.Armor import Armor
 
 
 class Model:
@@ -11,27 +12,30 @@ class Model:
         self.character = Character.CharacterData()
         self.class_options = {}
         self.race_options = {}
+        self.armors = {}
 
         self.databaseAPI = DatabaseAPI()
         self.load_classes()
         self.load_races()
+        self.load_armors()
 
     def load_character(self, character_name):
         # Load character by name, returns a dict. Keys match the DB table columns
         character_data = self.databaseAPI.load_character(character_name)
 
         self.set_name(character_data["Name"])
-        self.set_level(character_data["Level"])
-        self.set_class(self.class_options[character_data["Class"]].name)
-        self.set_race(self.race_options[character_data["Race"]].name)
-        # set_level also sets the proficiency bonus
+        self.set_level(character_data["Level"])  # set_level also sets the proficiency bonus
+        self.set_class(character_data["Class"])
+        self.set_race(character_data["Race"])
+
+        # Each set_ability also sets the ability modifiers and skill bonuses
         self.set_ability("Strength", character_data["Strength Score"])
         self.set_ability("Dexterity", character_data["Dexterity Score"])
         self.set_ability("Constitution", character_data["Constitution Score"])
         self.set_ability("Intelligence", character_data["Intelligence Score"])
         self.set_ability("Wisdom", character_data["Wisdom Score"])
         self.set_ability("Charisma", character_data["Charisma Score"])
-        # Each set_ability also sets the ability modifiers and skill bonuses
+
 
     def call_registered(self, field, new_value):
         self.controller.triggered(field, new_value)
@@ -47,12 +51,14 @@ class Model:
         self.set_proficiency_bonus()
 
     def set_class(self, new_value):
-        self.character.claas = new_value
-        self.controller.triggered("class", new_value)
+        # Here, new_value is just the name of the class, not the class object
+        self.character.claas = self.class_options[new_value]
+        self.controller.triggered("class", self.character.claas)
 
     def set_race(self, new_value):
-        self.character.race = new_value
-        self.controller.triggered("race", new_value)
+        # Here, new_value is just the name of the race, not the race object
+        self.character.race = self.race_options[new_value]
+        self.controller.triggered("race", self.character.race)
 
     def set_proficiency_bonus(self):
         self.character.proficiency_bonus = DataObjects.proficiency_bonus_map(self.character.level)
@@ -106,13 +112,13 @@ class Model:
             # Announce the skill was updated
             self.call_registered(skill + "_skill", self.character.skill_bonuses[skill])
 
-    def add_proficiency(self, skill):
+    def add_skill_proficiency(self, skill):
         related_ability = DataObjects.skill_to_score_map(skill)
         self.character.skill_proficiencies.append(skill)
         self.set_skill_bonus(related_ability)
         # Does not call any registered fields
 
-    def remove_proficiency(self, skill):
+    def remove_skill_proficiency(self, skill):
         related_ability = DataObjects.skill_to_score_map(skill)
         self.character.skill_proficiencies.remove(skill)
         self.set_skill_bonus(related_ability)
@@ -133,8 +139,6 @@ class Model:
         empty_class[0] = "None"
         self.class_options[""] = CharacterClass(empty_class)
 
-
-
     def load_races(self):
         races = self.databaseAPI.load_races()
         for race in races:
@@ -149,3 +153,10 @@ class Model:
         empty_race[0] = "None"
         self.race_options[""] = CharacterRace(empty_race)
 
+    def load_armors(self):
+        armors = self.databaseAPI.load_armors()
+        for armor in armors:
+            # Armor[0] is the name of the armor, so this save in dictionary format,
+            # Armor-name: Armor_object
+            self.armors[armor[0]] = Armor(armor)
+        # Empty armor is "Unarmored" Loaded from DB

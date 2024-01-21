@@ -29,3 +29,6 @@ class DatabaseAPI:
         sql_string = "SELECT * FROM Races"
         return self.cursor.execute(sql_string).fetchall()
 
+    def load_armors(self):
+        sql_string = "SELECT * FROM Armor"
+        return self.cursor.execute(sql_string).fetchall()

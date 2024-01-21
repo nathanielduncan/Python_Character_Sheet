@@ -57,9 +57,9 @@ class Controller:
 
     def proficiency_entered(self, action, skill):
         if action == "add":
-            self.model.add_proficiency(skill)
+            self.model.add_skill_proficiency(skill)
         if action == "remove":
-            self.model.remove_proficiency(skill)
+            self.model.remove_skill_proficiency(skill)
 
     def get_ability_list(self):
         return list(self.model.character.ability_scores)
