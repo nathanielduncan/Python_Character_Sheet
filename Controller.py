@@ -6,6 +6,7 @@ from Views.View import View
 class Controller:
     def __init__(self, window):
         self.registered_widgets = []
+        self.registered_fields = []
 
         self.model = Model(self)
         self.view = View(window, self)
@@ -17,34 +18,35 @@ class Controller:
         self.view.show_character_page()
         self.model.load_character("New_Character")
 
-    def register(self, widget, field):
+    def register_widget(self, widget, field):
         """
         Widgets with access to the controller can call this function to register themselves, or a widget they own, to be
         notified if the specified field is updated in the model. The passed widget must have a method named
         'update_field(field, new_value)'
-        :param widget:
-        :param field:
-        :return:
         """
         to_register = {"widget": widget,
                        "field": field}
         self.registered_widgets.append(to_register)
 
-    def triggered(self, field, new_value):
+    def trigger_widget(self, field, new_value):
         """
         Called by the model when it changes some data. the model provides the field name that was changed and the
         new value of that filed. This function then looks at all the registered widgets, to see if they have requested
         that field. If it has, it gives the widget the new value. The widget can do whatever with that knowledge.
-        :param field:
-        :param new_value:
-        :return:
         """
         for item in self.registered_widgets:
             if item["field"] == field:
                 item["widget"].update_field(item["field"], new_value)
 
-    def name_entered(self, name):
-        self.model.set_name(name)
+    def register_field(self, field, obj):
+        to_register = {"field": field,
+                       "object": obj}
+        self.registered_fields.append(to_register)
+
+    def trigger_field(self, field, new_value):
+        for item in self.registered_fields:
+            if item["field"] == field:
+                item["object"].update_field(item["field"], new_value)
 
     def class_entered(self, class_choice):
         self.model.set_class(class_choice)

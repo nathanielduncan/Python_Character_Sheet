@@ -9,21 +9,39 @@ from Models.Armor import Armor
 class Model:
     def __init__(self, controller):
         self.controller = controller
-        self.character = Character.CharacterData()
+        self.databaseAPI = DatabaseAPI()
+
+        self.character = Character.CharacterData(self.controller)
+
+        # Create empty dictionaries
         self.class_options = {}
         self.race_options = {}
         self.armors = {}
-
-        self.databaseAPI = DatabaseAPI()
+        # Fill the dictionaries
         self.load_classes()
         self.load_races()
         self.load_armors()
+
+        self.directory = {}
+        self.create_directory()
+        self.register_fields()
+
+    def create_directory(self):
+        self_dir = [self.character]
+        for obj in self_dir:
+            for field in dir(obj):
+                self.directory[field] = obj
+
+    def register_fields(self):
+        for field, obj in self.directory.items():
+            self.controller.register_field(field, obj)
 
     def load_character(self, character_name):
         # Load character by name, returns a dict. Keys match the DB table columns
         character_data = self.databaseAPI.load_character(character_name)
 
-        self.set_name(character_data["Name"])
+        #self.set_name(character_data["Name"])
+        self.character.set_name(character_data["Name"])
         self.set_level(character_data["Level"])  # set_level also sets the proficiency bonus
         self.set_class(character_data["Class"])
         self.set_race(character_data["Race"])
@@ -36,33 +54,28 @@ class Model:
         self.set_ability("Wisdom", character_data["Wisdom Score"])
         self.set_ability("Charisma", character_data["Charisma Score"])
 
-
     def call_registered(self, field, new_value):
-        self.controller.triggered(field, new_value)
-
-    def set_name(self, new_value):
-        self.character.name = new_value
-        self.controller.triggered("name", new_value)
+        self.controller.trigger_widget(field, new_value)
 
     def set_level(self, new_value):
         self.character.level = new_value
-        self.controller.triggered("level", new_value)
+        self.controller.trigger_widget("level", new_value)
 
         self.set_proficiency_bonus()
 
     def set_class(self, new_value):
         # Here, new_value is just the name of the class, not the class object
         self.character.claas = self.class_options[new_value]
-        self.controller.triggered("class", self.character.claas)
+        self.controller.trigger_widget("class", self.character.claas)
 
     def set_race(self, new_value):
         # Here, new_value is just the name of the race, not the race object
         self.character.race = self.race_options[new_value]
-        self.controller.triggered("race", self.character.race)
+        self.controller.trigger_widget("race", self.character.race)
 
     def set_proficiency_bonus(self):
         self.character.proficiency_bonus = DataObjects.proficiency_bonus_map(self.character.level)
-        self.controller.triggered("proficiency_bonus", self.character.proficiency_bonus)
+        self.controller.trigger_widget("proficiency_bonus", self.character.proficiency_bonus)
 
     def set_ability(self, ability, new_value):
         self.character.ability_scores[ability] = new_value
@@ -130,7 +143,6 @@ class Model:
             # claas[0] is the name of the class, so this saves in dictionary format,
             # Class_name: Class_object
             self.class_options[claas[0]] = CharacterClass(claas)
-
 
         # Build empty character class
         empty_class = []

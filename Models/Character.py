@@ -1,7 +1,9 @@
 # This will be the class that holds information on the Player Character as they enter information
 
 class CharacterData:
-    def __init__(self):
+    def __init__(self, controller):
+        self.controller = controller
+
         self.name = ""
         self.level = None
         self.proficiency_bonus = None
@@ -55,3 +57,14 @@ class CharacterData:
             "Stealth": "0",
             "Survival": "0"
         }
+
+    def __dir__(self):
+        return ["name", "level", "proficiency_bonus", "claas", "race", "ability_scores", "ability_modifiers",
+                "skill_proficiencies", "skill_bonuses"]
+
+    def update_field(self, field, new_value):
+        getattr(self, "set_" + field)(new_value)
+
+    def set_name(self, new_name):
+        self.name = new_name
+        self.controller.trigger_widget("name", self.name)
