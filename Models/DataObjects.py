@@ -11,7 +11,7 @@ def ability_skills():
     return skills
 
 
-def skill_to_score_map(skill):
+def skill_to_score_map():
     score_map = {
         "Strength": "Strength",
         "Dexterity": "Dexterity",
@@ -39,7 +39,7 @@ def skill_to_score_map(skill):
         "Stealth": "Dexterity",
         "Survival": "Wisdom"
     }
-    return score_map[skill]
+    return score_map
 
 
 def score_to_skill_dict(ability):

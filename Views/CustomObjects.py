@@ -43,11 +43,11 @@ class AbilityBox(ttk.Frame):
         self.lbl_modifier.grid(column=0, row=2)
 
         # Register with the controller, to be notified if the ability modifier is updated
-        self.controller.register(self, self.ability + "_mod")
+        self.controller.register_widget(self, self.ability + "_mod")
 
     def ability_updated(self, *args):
         # Let the controller know that the ability score was updated
-        self.controller.ability_entered(self.ability, self.ability_score.get())
+        self.controller.trigger_field("score", [self.ability, self.ability_score.get()])
 
     def update_field(self, field, new_value):
         if field == self.ability + "_mod":
@@ -77,7 +77,7 @@ class SkillLine(ttk.Frame):
         self.lbl_skill.grid(column=1, row=0)
 
         # Register with the controller, to be notified if the related ability modifier gets updated
-        self.controller.register(self, self.skill + "_skill")
+        self.controller.register_widget(self, self.skill + "_skill")
 
     def update_field(self, field, new_val):
         if field == self.skill + "_skill":
@@ -85,9 +85,9 @@ class SkillLine(ttk.Frame):
 
     def update_proficiency(self):
         if self.ckbtn_proficient.instate(['selected']):  # When selected, add proficiency
-            self.controller.proficiency_entered('add', self.skill)
+            self.controller.trigger_field('skill_proficiencies', ['add', self.skill])
         else:
-            self.controller.proficiency_entered('remove', self.skill)
+            self.controller.trigger_field('skill_proficiencies', ['remove', self.skill])
 
 
 class ProfBonusBox(ttk.Frame):
@@ -103,7 +103,7 @@ class ProfBonusBox(ttk.Frame):
         self.lbl_bonus.grid(column=0, row=0)
         self.lbl_proficiency.grid(column=1, row=0)
 
-        self.controller.register(self, "proficiency_bonus")
+        self.controller.register_widget(self, "proficiency_bonus")
 
     def update_field(self, field, new_val):
         if field == "proficiency_bonus":
@@ -124,7 +124,7 @@ class PassiveSkillBox(ttk.Frame):
         self.lbl_bonus.grid(column=0, row=0)
         self.lbl_skill.grid(column=1, row=0)
 
-        self.controller.register(self, self.skill + "_skill")
+        self.controller.register_widget(self, self.skill + "_skill")
 
     def update_field(self, field, new_val):
         if field == self.skill + "_skill":
@@ -149,11 +149,11 @@ class CharacterNameBox(ttk.Frame):
         self.ent_name.grid(column=0, row=0)
         self.lbl_label.grid(column=0, row=1)
 
-        self.controller.register(self, "name")
+        self.controller.register_widget(self, "name")
 
     def name_entered(self, *args):
-        # Called by changes to ent_name
-        self.controller.name_entered(self.name.get())
+        # Tell the controller this field changed
+        self.controller.trigger_field("name", self.name.get())
 
     def update_field(self, field, new_val):
         # Called by the controller, since self is registered
@@ -179,7 +179,7 @@ class LabeledOptions(ttk.Frame):
         self.label.grid(column=0, row=1)
 
         self.cbox_optionsList.bind("<<ComboboxSelected>>", self.option_selected)
-        self.controller.register(self, self.title)
+        self.controller.register_widget(self, self.title)
 
     def option_selected(self, *args):
         if self.title == "class":
@@ -224,8 +224,7 @@ class HitDieBox(ttk.Frame):
         self.lbl_die.grid(column=0, row=0)
         self.lbl_description.grid(column=0, row=1)
 
-        self.controller.register(self, "class")
-
+        self.controller.register_widget(self, "class")
 
     def update_field(self, field, new_value):
         if field == "class":
@@ -254,7 +253,7 @@ class ArmorProficiencies(ttk.Frame):
         rb_heavy.grid(column=2, row=1)
         rb_shield.grid(column=3, row=1)
 
-        self.controller.register(self, "class")
+        self.controller.register_widget(self, "class")
 
     def update_field(self, field, new_value):
         if field == "class":
@@ -299,7 +298,7 @@ class WeaponProficiencies(ttk.Frame):
         rb_martial.grid(column=1, row=1)
         # lbl_other gets .grid when fields are updated
 
-        self.controller.register(self, "class")
+        self.controller.register_widget(self, "class")
 
     def update_field(self, field, new_value):
         if field == "class":
@@ -338,9 +337,9 @@ class ListProficiencies(ttk.Frame):
         ttk.Label(self.items_frame, text="None").grid(column=0, row=0)
 
         if self.description == "Tool Proficiencies":
-            self.controller.register(self, "class")
+            self.controller.register_widget(self, "class")
         if self.description == "Language Proficiencies":
-            self.controller.register(self, "race")
+            self.controller.register_widget(self, "race")
 
     def update_field(self, field, new_value):
         if field == "class":
