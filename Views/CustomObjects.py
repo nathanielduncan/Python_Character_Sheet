@@ -47,7 +47,7 @@ class AbilityBox(ttk.Frame):
 
     def ability_updated(self, *args):
         # Let the controller know that the ability score was updated
-        self.controller.ability_entered(self.ability, self.ability_score.get())
+        self.controller.trigger_field("score", [self.ability, self.ability_score.get()])
 
     def update_field(self, field, new_value):
         if field == self.ability + "_mod":
@@ -85,9 +85,9 @@ class SkillLine(ttk.Frame):
 
     def update_proficiency(self):
         if self.ckbtn_proficient.instate(['selected']):  # When selected, add proficiency
-            self.controller.proficiency_entered('add', self.skill)
+            self.controller.trigger_field('skill_proficiencies', ['add', self.skill])
         else:
-            self.controller.proficiency_entered('remove', self.skill)
+            self.controller.trigger_field('skill_proficiencies', ['remove', self.skill])
 
 
 class ProfBonusBox(ttk.Frame):

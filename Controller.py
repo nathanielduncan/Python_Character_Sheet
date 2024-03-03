@@ -1,5 +1,4 @@
 from Models.Model import Model
-from Models import DataObjects
 from Views.View import View
 
 
@@ -39,11 +38,22 @@ class Controller:
                 item["widget"].update_field(item["field"], new_value)
 
     def register_field(self, field, obj):
+        """
+        Fields with access to the controller can call this function to register themselves, to be notified if any
+        widgets from the view try to update that field. The passed field must have a method named
+        'update_field(field, new_value)'
+        """
         to_register = {"field": field,
                        "object": obj}
         self.registered_fields.append(to_register)
 
     def trigger_field(self, field, new_value):
+        """
+        Called by a widget when it changes some data. The widget provides the field name that was changed and the
+        new value of that filed. This function then looks at all the registered fields from the model, to see if they
+        have requested that field. If it has, it gives the field the new value.
+        The field can do whatever with that knowledge.
+        """
         for item in self.registered_fields:
             if item["field"] == field:
                 item["object"].update_field(item["field"], new_value)
@@ -53,15 +63,6 @@ class Controller:
 
     def race_entered(self, race_choice):
         self.model.set_race(race_choice)
-
-    def ability_entered(self, ability, new_value):
-        self.model.set_ability(ability, new_value)
-
-    def proficiency_entered(self, action, skill):
-        if action == "add":
-            self.model.add_skill_proficiency(skill)
-        if action == "remove":
-            self.model.remove_skill_proficiency(skill)
 
     def get_ability_list(self):
         return list(self.model.character.ability_scores)
@@ -73,7 +74,7 @@ class Controller:
         return skills
 
     def get_related_ability(self, skill):
-        return DataObjects.skill_to_score_map(skill)
+        return self.model.skill_to_score_map.get(skill)
 
     def get_class_names(self):
         names = []
