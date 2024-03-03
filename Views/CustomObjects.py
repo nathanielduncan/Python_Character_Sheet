@@ -182,10 +182,7 @@ class LabeledOptions(ttk.Frame):
         self.controller.register_widget(self, self.title)
 
     def option_selected(self, *args):
-        if self.title == "class":
-            self.controller.class_entered(self.option.get())
-        if self.title == "race":
-            self.controller.race_entered(self.option.get())
+        self.controller.trigger_field(self.title, self.option.get())
 
     def update_field(self, field, new_value):
         if field == self.title:
@@ -193,8 +190,9 @@ class LabeledOptions(ttk.Frame):
 
 
 class LabeledEntry(ttk.Frame):
-    def __init__(self, parent, description):
+    def __init__(self, parent, description, controller):
         ttk.Frame.__init__(self, parent)
+        self.controller = controller
 
         self.entryString = StringVar()
         # Customize the fonts
@@ -206,6 +204,18 @@ class LabeledEntry(ttk.Frame):
 
         self.ent_entry.grid(column=0, row=0)
         self.lbl_label.grid(column=0, row=1)
+
+        if description == "Level exp/exp":
+            self.controller.register_widget(self, "level")
+            self.entryString.trace_add("write", self.level_entered)
+
+    def level_entered(self, *args):
+        # Tell the controller this field changed
+        self.controller.trigger_field("level", self.entryString.get())
+
+    def update_field(self, field, new_value):
+        if field == 'level':
+            self.entryString.set(new_value)
 
 
 class HitDieBox(ttk.Frame):

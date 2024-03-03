@@ -25,16 +25,16 @@ class PlayerInformation(ttk.Frame):
                                                      "race", self.controller.get_race_names(), self.controller)
         self.frm_race.grid(column=1, row=0)
         # Item 3, Background
-        self.frm_background = CustomObjects.LabeledEntry(self.frm_player_items, "Background")
+        self.frm_background = CustomObjects.LabeledEntry(self.frm_player_items, "Background", self.controller)
         self.frm_background.grid(column=2, row=0)
         # Item 4, Level
-        self.frm_level = CustomObjects.LabeledEntry(self.frm_player_items, "Level exp/exp")
+        self.frm_level = CustomObjects.LabeledEntry(self.frm_player_items, "Level exp/exp", self.controller)
         self.frm_level.grid(column=0, row=1)
         # Item 5, Alignment
-        self.frm_Alignment = CustomObjects.LabeledEntry(self.frm_player_items, "Alignment")
+        self.frm_Alignment = CustomObjects.LabeledEntry(self.frm_player_items, "Alignment", self.controller)
         self.frm_Alignment.grid(column=1, row=1)
         # Item 6, Player Name
-        self.frm_player = CustomObjects.LabeledEntry(self.frm_player_items, "Player Name")
+        self.frm_player = CustomObjects.LabeledEntry(self.frm_player_items, "Player Name", self.controller)
         self.frm_player.grid(column=2, row=1)
 
 
@@ -105,7 +105,7 @@ class Life(ttk.Frame):
         frm_major_attributes = ttk.Frame(self)
         frm_major_attributes.grid(column=0, row=0)
 
-        self.ent_max_health = CustomObjects.LabeledEntry(frm_major_attributes, "Max Hit Points")
+        self.ent_max_health = CustomObjects.LabeledEntry(frm_major_attributes, "Max Hit Points", self.controller)
         self.ent_max_health.grid(column=0, row=0)
         lbl_initiative = CustomObjects.MajorAttribute(frm_major_attributes, "Initiative")
         lbl_initiative.grid(column=1, row=0)
@@ -116,16 +116,16 @@ class Life(ttk.Frame):
         frm_health = ttk.Frame(self)
         frm_health.grid(column=0, row=1)
 
-        lbl_hitPoints = CustomObjects.LabeledEntry(frm_health, "Current Hit Points")
+        lbl_hitPoints = CustomObjects.LabeledEntry(frm_health, "Current Hit Points", self.controller)
         lbl_hitPoints.grid(column=0, row=0, columnspan=2)
-        lbl_tempPoints = CustomObjects.LabeledEntry(frm_health, "Temporary Hit Points")
+        lbl_tempPoints = CustomObjects.LabeledEntry(frm_health, "Temporary Hit Points", self.controller)
         lbl_tempPoints.grid(column=0, row=1, columnspan=2)
 
         # Frame for Hit Die
         self.lbl_hitDice = CustomObjects.HitDieBox(frm_health, self.controller)
         self.lbl_hitDice.grid(column=0, row=2)
 
-        lbl_deathRolls = CustomObjects.LabeledEntry(frm_health, "Death Saves")
+        lbl_deathRolls = CustomObjects.LabeledEntry(frm_health, "Death Saves", self.controller)
         lbl_deathRolls.grid(column=1, row=2)
 
 

@@ -1,5 +1,4 @@
 from Models import Character
-from Models import DataObjects
 from Models.DatabaseAPI import DatabaseAPI
 from Models.CharacterClass import CharacterClass
 from Models.CharacterRace import CharacterRace
@@ -10,9 +9,6 @@ class Model:
     def __init__(self, controller):
         self.controller = controller
         self.databaseAPI = DatabaseAPI()
-        self.skill_to_score_map = DataObjects.skill_to_score_map()
-
-        self.character = Character.CharacterData(self.controller, self.skill_to_score_map)
 
         # Create empty dictionaries
         self.class_options = {}
@@ -22,6 +18,8 @@ class Model:
         self.load_classes()
         self.load_races()
         self.load_armors()
+
+        self.character = Character.CharacterData(self.controller, self)
 
         # Create directory/registry to be called by the controller
         self.directory = {}
@@ -43,9 +41,9 @@ class Model:
         character_data = self.databaseAPI.load_character(character_name)
 
         self.character.set_name(character_data["Name"])
-        self.set_level(character_data["Level"])  # set_level also sets the proficiency bonus
-        self.set_class(character_data["Class"])
-        self.set_race(character_data["Race"])
+        self.character.set_level(character_data["Level"])  # set_level also sets the proficiency bonus
+        self.character.set_class(character_data["Class"])
+        self.character.set_race(character_data["Race"])
 
         # Each set_ability also sets the ability modifiers and skill bonuses
         self.character.set_score(["Strength", character_data["Strength Score"]])
@@ -57,26 +55,6 @@ class Model:
 
     def call_registered(self, field, new_value):
         self.controller.trigger_widget(field, new_value)
-
-    def set_level(self, new_value):
-        self.character.level = new_value
-        self.controller.trigger_widget("level", new_value)
-
-        self.set_proficiency_bonus()
-
-    def set_class(self, new_value):
-        # Here, new_value is just the name of the class, not the class object
-        self.character.claas = self.class_options[new_value]
-        self.controller.trigger_widget("class", self.character.claas)
-
-    def set_race(self, new_value):
-        # Here, new_value is just the name of the race, not the race object
-        self.character.race = self.race_options[new_value]
-        self.controller.trigger_widget("race", self.character.race)
-
-    def set_proficiency_bonus(self):
-        self.character.proficiency_bonus = DataObjects.proficiency_bonus_map(self.character.level)
-        self.controller.trigger_widget("proficiency_bonus", self.character.proficiency_bonus)
 
     def load_classes(self):
         classes = self.databaseAPI.load_classes()
@@ -113,3 +91,77 @@ class Model:
             # Armor-name: Armor_object
             self.armors[armor[0]] = Armor(armor)
         # Empty armor is "Unarmored" Loaded from DB
+
+
+    @staticmethod
+    def proficiency_bonus_map(level):
+        try:
+            level = int(level)
+            if level < 5:
+                key = "A"
+            elif 5 <= level < 9:
+                key = "B"
+            elif 9 <= level < 13:
+                key = "C"
+            elif 13 <= level < 17:
+                key = "D"
+            elif 17 <= level:
+                key = "E"
+            else:
+                key = "Z"
+        except ValueError:  # If empty level is passed
+            key = "Z"
+
+        prof_bonus_map = {
+            "A": "2",
+            "B": "3",
+            "C": "4",
+            "D": "5",
+            "E": "6",
+            "Z": "0"
+        }
+        return prof_bonus_map[key]
+
+
+    @staticmethod
+    def skill_to_score_map(skill):
+        score_map = {
+            "Strength": "Strength",
+            "Dexterity": "Dexterity",
+            "Constitution": "Constitution",
+            "Intelligence": "Intelligence",
+            "Wisdom": "Wisdom",
+            "Charisma": "Charisma",
+
+            "Acrobatics": "Dexterity",
+            "Animal Handling": "Wisdom",
+            "Arcana": "Intelligence",
+            "Athletics": "Strength",
+            "Deception": "Charisma",
+            "History": "Intelligence",
+            "Insight": "Wisdom",
+            "Intimidation": "Charisma",
+            "Investigation": "Intelligence",
+            "Medicine": "Wisdom",
+            "Nature": "Intelligence",
+            "Perception": "Wisdom",
+            "Performance": "Charisma",
+            "Persuasion": "Charisma",
+            "Religion": "Intelligence",
+            "Sleight of Hand": "Dexterity",
+            "Stealth": "Dexterity",
+            "Survival": "Wisdom"
+        }
+        return score_map[skill]
+
+    @staticmethod
+    def score_to_skill_dict(ability):
+        score_map = {
+            "Strength": {"Athletics", },
+            "Dexterity": {"Acrobatics", "Sleight of Hand", "Stealth"},
+            "Constitution": {},
+            "Intelligence": {"Arcana", "History", "Investigation", "Nature", "Religion"},
+            "Wisdom": {"Animal Handling", "Insight", "Medicine", "Perception", "Survival"},
+            "Charisma": {"Deception", "Intimidation", "Performance", "Persuasion"}
+        }
+        return score_map[ability]

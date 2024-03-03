@@ -1,11 +1,9 @@
 # This will be the class that holds information on the Player Character as they enter information
-from Models import DataObjects
-
 
 class CharacterData:
-    def __init__(self, controller, scoremap):
+    def __init__(self, controller, model):
         self.controller = controller
-        self.skill_to_score_map = scoremap
+        self.model = model
 
         self.name = ""
         self.level = ""
@@ -63,7 +61,7 @@ class CharacterData:
         }
 
     def __dir__(self):
-        return ["name", "level", "proficiency_bonus", "claas", "race", "Strength_score", "score",
+        return ["name", "level", "proficiency_bonus", "class", "race", "Strength_score", "score",
                 "ability_modifiers", "skill_proficiencies", "skill_bonuses"]
 
     def update_field(self, field, new_value):
@@ -108,7 +106,7 @@ class CharacterData:
         else:  # If not empty, consider the proficiency bonus
             mod_with_proficiency = str(int(modifier) + int(self.proficiency_bonus))
 
-        related_skills = DataObjects.score_to_skill_dict(ability)
+        related_skills = self.model.score_to_skill_dict(ability)
 
         # Place modifier for the saving throw
         if self.skill_proficiencies.count(ability) != 0:  # If proficient with save
@@ -129,10 +127,36 @@ class CharacterData:
 
     def set_skill_proficiencies(self, value_details):
         if value_details[0] == 'add':
-            related_ability = self.skill_to_score_map.get(value_details[1])
+            related_ability = self.model.skill_to_score_map(value_details[1])
             self.skill_proficiencies.append(value_details[1])
             self.set_skill_bonus(related_ability)
+            # Dont trigger_widget, this is done in set_skill_bonus
         elif value_details[0] == 'remove':
-            related_ability = self.skill_to_score_map.get(value_details[1])
+            related_ability = self.model.skill_to_score_map(value_details[1])
             self.skill_proficiencies.remove(value_details[1])
             self.set_skill_bonus(related_ability)
+            # Dont trigger_widget, this is done in set_skill_bonus
+
+    def set_level(self, new_value):
+        self.level = new_value
+        self.controller.trigger_widget("level", new_value)
+
+        self.set_proficiency_bonus()
+
+    def set_proficiency_bonus(self):
+        self.proficiency_bonus = self.model.proficiency_bonus_map(self.level)
+        self.controller.trigger_widget("proficiency_bonus", self.proficiency_bonus)
+
+        # Also update skills using new prof bonus, do for each ability type
+        for ability in list(self.ability_scores):
+            self.set_skill_bonus(ability)
+
+    def set_race(self, new_value):
+        # Here, new_value is just the name of the race, not the race object
+        self.race = self.model.race_options[new_value]
+        self.controller.trigger_widget("race", self.race)
+
+    def set_class(self, new_value):
+        # Here, new_value is just the name of the class, not the class object
+        self.claas = self.model.class_options[new_value]
+        self.controller.trigger_widget("class", self.claas)

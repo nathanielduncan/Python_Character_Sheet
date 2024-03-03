@@ -58,12 +58,6 @@ class Controller:
             if item["field"] == field:
                 item["object"].update_field(item["field"], new_value)
 
-    def class_entered(self, class_choice):
-        self.model.set_class(class_choice)
-
-    def race_entered(self, race_choice):
-        self.model.set_race(race_choice)
-
     def get_ability_list(self):
         return list(self.model.character.ability_scores)
 
@@ -74,7 +68,7 @@ class Controller:
         return skills
 
     def get_related_ability(self, skill):
-        return self.model.skill_to_score_map.get(skill)
+        return self.model.skill_to_score_map(skill)
 
     def get_class_names(self):
         names = []
